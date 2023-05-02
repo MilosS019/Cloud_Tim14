@@ -1,0 +1,24 @@
+.file-input {
+    display: none;
+  }
+
+.file-upload{
+}
+
+.file-upload p {
+    margin-top: -10px;
+}
+
+.upload-btn img{
+    width: 20px;
+    height: 20px;
+    background: none;
+    border: none;
+}
+
+.upload-btn{
+    margin-top: 10px;
+    background:none;
+    border: none;
+    cursor: pointer;
+}
