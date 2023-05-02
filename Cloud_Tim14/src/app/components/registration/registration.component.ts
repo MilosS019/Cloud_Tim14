@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./registration.component.css'],
 })
 export class RegistrationComponent {
+  
   constructor(private router: Router, private userService: UsersService) {}
 
   formGroup: FormGroup = new FormGroup({
@@ -30,7 +31,7 @@ export class RegistrationComponent {
     };
     this.userService.registerUser(user).subscribe(
       (response) => {
-        if (response.code == 200) {
+        if (response.statusCode == 200) {
           alert(response.body);
         } else {
           alert('Error! ' + response.body);
@@ -41,6 +42,6 @@ export class RegistrationComponent {
   }
 
   goToLoginPage(): void {
-    this.router.navigate(['login']);
+    this.router.navigate(['']);
   }
 }

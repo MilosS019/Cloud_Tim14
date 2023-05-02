@@ -1,0 +1,46 @@
+.file-input {
+    display: none;
+  }
+
+.file-upload{
+}
+
+.file-upload p {
+    margin-top: -10px;
+}
+
+.upload-img img{
+    width: 20px;
+    height: 20px;
+    background: none;
+    border: none;
+}
+
+.upload-img{
+    margin-top: 10px;
+    background:none;
+    border: none;
+    cursor: pointer;
+}
+
+
+#tag button{
+    display: inline-block;
+}
+
+#tag p{
+    display: inline-block;
+}
+
+#tag p {
+    width: 100px;
+}
+
+#upload-btn{
+    margin-top: 20px;
+    width: 170px;
+}
+
+#container{
+    margin-left: 20px;
+}

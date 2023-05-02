@@ -1,0 +1,30 @@
+<div id = "container">
+  <input type="file" class="file-input"
+       (change)="onFileSelected($event)" #fileUpload>
+
+
+  <div class="file-upload">
+
+    {{fileName || "No file uploaded yet."}}
+
+      <button mat-mini-fab color="primary" class="upload-img"
+        (click)="fileUpload.click()">
+        <img src="assets/images/upload.png" alt="">
+          <!-- <mat-icon>attach_file</mat-icon> -->
+      </button>
+  </div>
+  <p>Descritpion</p>
+  <input type="text" [formControl] = "descritpion">
+  <div>
+    <p>Tags</p>
+    <input type="text" [formControl] = "tag">
+    <button (click)="addTag()">Add</button>
+    <div id = "tags">
+      <div id="tag" *ngFor="let tag of tags; index as i">
+        <p>{{tag}}</p>
+        <button (click)="removeTag(i)">Remove</button>
+      </div>
+    </div>
+  </div>
+  <button id = "upload-btn" (click)="upload()">Upload</button>
+</div>

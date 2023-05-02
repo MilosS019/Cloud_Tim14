@@ -25,8 +25,9 @@ export class LoginComponent {
 
     this.userService.login(loginRequest).subscribe(
       (response) => {
-        if (response.code == 200) {
+        if (response.statusCode == 200) {
           alert(response.body);
+          this.router.navigate(['file-upload'])
         } else {
           alert('Error! ' + response.body);
         }
