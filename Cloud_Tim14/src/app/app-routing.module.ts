@@ -7,14 +7,15 @@ import { FileUploadComponent } from './components/file-upload/file-upload.compon
 
 const routes: Routes = [
   {
-    path: 'login',
+    path: '',
     component: LoginComponent,
   },
   {
     path: 'create-account',
     component: RegistrationComponent,
-  },{
-    path: '',
+  },
+  {
+    path: 'file-upload',
     component: FileUploadComponent
   }
 ];

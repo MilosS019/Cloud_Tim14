@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { UsersService } from '../../services/users.service';
+import { LoginRequest } from '../../models/login-request.model';
 
 @Component({
   selector: 'app-login',
@@ -7,10 +10,33 @@ import { FormGroup, FormControl } from '@angular/forms';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
+  constructor(private router: Router, private userService: UsersService) {}
+
   formGroup: FormGroup = new FormGroup({
-    email: new FormControl(''),
+    username: new FormControl(''),
     password: new FormControl(''),
   });
-  public login(): void {}
-  public goToCreateAccount(): void {}
+
+  public login(): void {
+    let loginRequest: LoginRequest = {
+      username: this.formGroup.value.username,
+      password: this.formGroup.value.password,
+    };
+
+    this.userService.login(loginRequest).subscribe(
+      (response) => {
+        if (response.statusCode == 200) {
+          alert(response.body);
+          this.router.navigate(['file-upload'])
+        } else {
+          alert('Error! ' + response.body);
+        }
+      },
+      (err) => alert(err)
+    );
+  }
+
+  public goToCreateAccount(): void {
+    this.router.navigate(['create-account']);
+  }
 }
