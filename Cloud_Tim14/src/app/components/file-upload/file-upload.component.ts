@@ -54,8 +54,8 @@ export class FileUploadComponent {
     }
     let s3Client:S3Client;
     s3Client = new S3Client({region:"eu-north-1", credentials:{
-      accessKeyId: "AKIA4IB5G6SAVTWWTL7Z",
-      secretAccessKey: "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"
+      accessKeyId: "",
+      secretAccessKey: ""
     }})
     this.fileUpload(s3Client, fileParams);
     this.fileUpload(s3Client, fileInfoParams);
