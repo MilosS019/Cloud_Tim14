@@ -1,0 +1,45 @@
+<div class="main-container">
+  <form
+    *ngIf="!isConfirm"
+    class="form-container"
+    [formGroup]="formGroup"
+    (ngSubmit)="signUp()"
+  >
+    <div class="table-layout">
+      <div class="form-field-container">
+        <label for="email">Email</label>
+        <input type="email" name="email" formControlName="email" />
+      </div>
+      <div class="form-field-container">
+        <label for="password">Password</label>
+        <input type="password" name="password" formControlName="password" />
+      </div>
+      <div class="form-field-container">
+        <label for="name">Name</label>
+        <input type="text" name="name" formControlName="name" />
+      </div>
+      <div class="form-field-container">
+        <label for="lastname">Lastname</label>
+        <input type="text" name="lastname" formControlName="lastname" />
+      </div>
+    </div>
+    <div class="buttons-layout">
+      <button type="submit" class="submit-button">Create account</button>
+      <p (click)="goToLoginPage()" class="go-back">Back to login</p>
+    </div>
+  </form>
+  <form
+    *ngIf="isConfirm"
+    class="form-container"
+    [formGroup]="codeFormGroup"
+    (ngSubmit)="confirmSignUp()"
+  >
+    <div class="form-field-container">
+      <label for="code">Code</label>
+      <input type="code" name="code" formControlName="code" />
+    </div>
+    <div class="buttons-layout">
+      <button type="submit" class="submit-button">Verify Account</button>
+    </div>
+  </form>
+</div>

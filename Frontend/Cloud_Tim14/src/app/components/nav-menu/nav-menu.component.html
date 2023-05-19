@@ -1,0 +1,9 @@
+<nav *ngIf="isAuthenticated()" class="navbar">
+  <div class="navbar-left">
+    <a (click)="fetchUsers()" class="navbar-link">Fetch Users</a>
+    <a href="#" class="navbar-link">About</a>
+  </div>
+  <div class="navbar-right">
+    <a (click)="logOut()" class="navbar-link">Logout</a>
+  </div>
+</nav>
