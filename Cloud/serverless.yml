@@ -1,28 +1,30 @@
-service: api-gateway-demo
-frameworkVersion: '3'
+service: cloud-project
+frameworkVersion: "3"
 
 provider:
   name: aws
   runtime: python3.7
+  profile: Martic
   stage: dev
   region: eu-central-1
   memorySize: 128
   timeout: 10
   environment:
-    TABLE_NAME:
-      Ref: dogsTable
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:DescribeTable
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-      Resource:
-        - "Fn::GetAtt": [dogsTable, Arn]
+    USER_TABLE: !Ref userTable
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:DescribeTable
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - "Fn::GetAtt": [userTable, Arn]
 
 # Packaging global configuration
 package:
@@ -31,81 +33,104 @@ package:
   patterns:
     # Exclude everything (each Lambda will specify which directory should be included)
     # To exclude use '!' prefix
-    - '!**/**'
+    - "!**/**"
     # Include utility directory for every Lambda function
-    - 'utility/**'
+    - "utility/**"
 
 functions:
-  createDog:
-    handler: createDogs/create_dogs.create
+  saveUser:
+    handler: saveUser/save_user.save
     package:
-      # Include 'createDogs' directory and all child directories
-      include: 'createDogs/**'
+      # Include 'registerUser' directory and all child directories
+      include: "saveUser/**"
     # Specifies events that trigger the Lambda function
     events:
       # REST API endpoint of API Gateway
       - http:
           # Path for this endpoint
-          path: dogs
+          path: users
           # HTTP method for this endpoint
           method: post
           # Enable CORS. Don't forget to return the right header in your response
           cors: true
-  
-  getDogs:
-    handler: getDogs/get_dogs.get_all
+  getUsers:
+    handler: getUsers/get_users.get_all_users
     package:
-      include: 'getDogs/**'
+      # Include 'registerUser' directory and all child directories
+      include: "getUsers/**"
+    # Specifies events that trigger the Lambda function
     events:
+      # REST API endpoint of API Gateway
       - http:
-          path: dogs
+          # Path for this endpoint
+          path: users
+          # HTTP method for this endpoint
           method: get
+          # Enable CORS. Don't forget to return the right header in your response
           cors: true
-  
-  getDog:
-    handler: getDog/get_dog.get_one
-    package:
-      include: 'getDog/**'
-    events:
-      - http:
-          # Path parameter 'name'
-          path: dogs/{name}
-          method: get
-          cors: true
-          # Specifying path parameters
-          request:
-            parameters:
-              paths:
-                # Mark path parameter 'name' as required
-                name: true
-  
-  deleteDog:
-    handler: deleteDog/delete_dog.delete
-    package:
-      include: 'deleteDog/**'
-    events:
-      - http:
-          # Path parameter 'name'
-          path: dogs/{name}
-          method: delete
-          cors: true
-          request:
-            parameters:
-              paths:
-                name: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
 
 resources:
   Resources:
-    dogsTable:
+    userTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: serverlessDogsTable
+        TableName: userTable
         AttributeDefinitions:
-          - AttributeName: name
+          - AttributeName: email
             AttributeType: S
         KeySchema:
-          - AttributeName: name
+          - AttributeName: email
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+
+    MyUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: my-user-poll
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        MfaConfiguration: OFF
+        AccountRecoverySetting:
+          RecoveryMechanisms:
+            - Name: verified_email
+              Priority: 1
+        UserPoolTags:
+          TagKey: TagValue
+    MyUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        UserPoolId: !Ref MyUserPool
+        ClientName: my-user-poll
+        GenerateSecret: false
+
+    MyApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        AuthorizerResultTtlInSeconds: 10
+        IdentitySource: method.request.header.Authorization
+        Name: MyCognitoAuthorizer
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs:
+          - {
+              "Fn::Join":
+                [
+                  "",
+                  [
+                    "arn:aws:cognito-idp:",
+                    { Ref: "AWS::Region" },
+                    ":",
+                    { Ref: "AWS::AccountId" },
+                    ":userpool/",
+                    Ref: MyUserPool,
+                  ],
+                ],
+            }

@@ -9,7 +9,7 @@ import { UsersService } from '../../services/users.service';
 import { User } from '../../models/user.model';
 import { Router } from '@angular/router';
 import { CognitoService } from '../../services/cognito.service';
-
+import { AbstractControl } from '@angular/forms';
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
@@ -31,6 +31,7 @@ export class RegistrationComponent {
     password: ['', Validators.required],
     name: ['', Validators.required],
     lastname: ['', Validators.required],
+    birthday: ['', birthdayValidator],
   });
 
   private codeFormBuilder: FormBuilder = new FormBuilder();
@@ -44,6 +45,12 @@ export class RegistrationComponent {
     this.user.password = this.formGroup.value.password;
     this.user.name = this.formGroup.value.email;
     this.user.lastname = this.formGroup.value.lastname;
+    this.user.birthday = this.formGroup.value.birthday;
+
+    if (this.formGroup.controls['birthday'].invalid) {
+      alert('Invalid date!');
+      return;
+    }
 
     if (this.formGroup.valid) {
       this.cognitoService
@@ -65,7 +72,7 @@ export class RegistrationComponent {
     this.cognitoService
       .confirmSignUp(this.user)
       .then(() => {
-        this.userService.registerUser(this.user).subscribe(
+        this.userService.saveUser(this.user).subscribe(
           (response) => {},
           (err) => {
             alert(err.error.message);
@@ -82,4 +89,27 @@ export class RegistrationComponent {
   goToLoginPage(): void {
     this.router.navigate(['']);
   }
+}
+
+function birthdayValidator(
+  control: AbstractControl
+): { [key: string]: boolean } | null {
+  const birthday = control.value;
+
+  // Provera da li je unet datum
+  if (!birthday) {
+    return null; // Prolazi validaciju ako nije unet datum
+  }
+
+  // Konverzija unetog datuma u objekat Date
+  const birthdayDate = new Date(birthday);
+
+  // Provera da li je unet ispravan datum
+  if (isNaN(birthdayDate.getTime())) {
+    return { invalidBirthday: true }; // Ne prolazi validaciju ako nije ispravan datum
+  }
+
+  // Dodatne provere po potrebi...
+
+  return null; // Prolazi validaciju ako je unet ispravan datum
 }
