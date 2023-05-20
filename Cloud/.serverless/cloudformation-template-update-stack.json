@@ -71,10 +71,10 @@
         }
       }
     },
-    "RegisterUserLogGroup": {
+    "SaveUserLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/cloud-project-dev-registerUser"
+        "LogGroupName": "/aws/lambda/cloud-project-dev-saveUser"
       }
     },
     "GetUsersLogGroup": {
@@ -181,18 +181,18 @@
         }
       }
     },
-    "RegisterUserLambdaFunction": {
+    "SaveUserLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/cloud-project/dev/1684452716805-2023-05-18T23:31:56.805Z/registerUser.zip"
+          "S3Key": "serverless/cloud-project/dev/1684460649405-2023-05-19T01:44:09.405Z/saveUser.zip"
         },
-        "Handler": "registerUser/register_user.register",
+        "Handler": "saveUser/save_user.save",
         "Runtime": "python3.7",
-        "FunctionName": "cloud-project-dev-registerUser",
+        "FunctionName": "cloud-project-dev-saveUser",
         "MemorySize": 128,
         "Timeout": 10,
         "Environment": {
@@ -210,7 +210,7 @@
         }
       },
       "DependsOn": [
-        "RegisterUserLogGroup"
+        "SaveUserLogGroup"
       ]
     },
     "GetUsersLambdaFunction": {
@@ -220,7 +220,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/cloud-project/dev/1684452716805-2023-05-18T23:31:56.805Z/getUsers.zip"
+          "S3Key": "serverless/cloud-project/dev/1684460649405-2023-05-19T01:44:09.405Z/getUsers.zip"
         },
         "Handler": "getUsers/get_users.get_all_users",
         "Runtime": "python3.7",
@@ -245,6 +245,16 @@
         "GetUsersLogGroup"
       ]
     },
+    "SaveUserLambdaVersionp1g5skcY1vsNBzv1ag7Nx3FSWyKq3RfmC2KSh4qP9g": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "SaveUserLambdaFunction"
+        },
+        "CodeSha256": "W2TRexG5eSEvysMIaIhPPaEUCRyYZAttY6e45BZdkRM="
+      }
+    },
     "GetUsersLambdaVersionYrSZ1XxYnzLZyH3M3BAnyFxawR7xIOSLRsPi2BCLAZI": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
@@ -253,16 +263,6 @@
           "Ref": "GetUsersLambdaFunction"
         },
         "CodeSha256": "/HOEVCZqXDBkOc4sSID0RB+aIbj9XzavVIPLXZ+3YoM="
-      }
-    },
-    "RegisterUserLambdaVersionRuVwboKtlnkd7JknOo1erLeY3CZkTLQ9HG3cVpGnY": {
-      "Type": "AWS::Lambda::Version",
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "RegisterUserLambdaFunction"
-        },
-        "CodeSha256": "tA7gWMwYb80ALWGsW8GVgpPbgeRvRY3TpBTp9uAXhVY="
       }
     },
     "ApiGatewayRestApi": {
@@ -368,7 +368,7 @@
                 ":lambda:path/2015-03-31/functions/",
                 {
                   "Fn::GetAtt": [
-                    "RegisterUserLambdaFunction",
+                    "SaveUserLambdaFunction",
                     "Arn"
                   ]
                 },
@@ -380,7 +380,7 @@
         "MethodResponses": []
       },
       "DependsOn": [
-        "RegisterUserLambdaPermissionApiGateway"
+        "SaveUserLambdaPermissionApiGateway"
       ]
     },
     "ApiGatewayMethodUsersGet": {
@@ -432,7 +432,7 @@
         "GetUsersLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1684452715186": {
+    "ApiGatewayDeployment1684460647040": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -446,12 +446,12 @@
         "ApiGatewayMethodUsersGet"
       ]
     },
-    "RegisterUserLambdaPermissionApiGateway": {
+    "SaveUserLambdaPermissionApiGateway": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
           "Fn::GetAtt": [
-            "RegisterUserLambdaFunction",
+            "SaveUserLambdaFunction",
             "Arn"
           ]
         },
@@ -619,6 +619,15 @@
         "Name": "sls-cloud-project-dev-ServerlessDeploymentBucketName"
       }
     },
+    "SaveUserLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "SaveUserLambdaVersionp1g5skcY1vsNBzv1ag7Nx3FSWyKq3RfmC2KSh4qP9g"
+      },
+      "Export": {
+        "Name": "sls-cloud-project-dev-SaveUserLambdaFunctionQualifiedArn"
+      }
+    },
     "GetUsersLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
@@ -626,15 +635,6 @@
       },
       "Export": {
         "Name": "sls-cloud-project-dev-GetUsersLambdaFunctionQualifiedArn"
-      }
-    },
-    "RegisterUserLambdaFunctionQualifiedArn": {
-      "Description": "Current Lambda function version",
-      "Value": {
-        "Ref": "RegisterUserLambdaVersionRuVwboKtlnkd7JknOo1erLeY3CZkTLQ9HG3cVpGnY"
-      },
-      "Export": {
-        "Name": "sls-cloud-project-dev-RegisterUserLambdaFunctionQualifiedArn"
       }
     },
     "ServiceEndpoint": {

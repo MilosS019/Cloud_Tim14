@@ -1,0 +1,39 @@
+<div>
+  <div (click)="openAlbum()" class="album-card">
+    <div class="album-count">Number of files: {{ album.numberOfFiles }}</div>
+    <div class="album-details">
+      <h3 class="album-title">{{ album.name }}</h3>
+    </div>
+  </div>
+  <div class="file-actions">
+    <i (click)="openShareAlbumForm()" class="fas fa-share"></i>
+    <i (click)="openRemoveSharingAlbumForm()" class="fas fa-unlink"></i>
+    <i (click)="deleteAlbum()" class="fas fa-trash"></i>
+  </div>
+</div>
+
+<div *ngIf="isShareFormDisplayed" style="margin-bottom: 10px">
+  <form [formGroup]="shareFormGroup" (ngSubmit)="shareAlbum()">
+    <input
+      type="email"
+      name="email"
+      placeholder="Enter user email to add view rights"
+      formControlName="email"
+    />
+    <button type="submit">Send</button>
+    <button (click)="closeShareAlbumForm()">Close</button>
+  </form>
+</div>
+
+<div *ngIf="isRemoveSharingFormDisplayed" style="margin-bottom: 10px">
+  <form [formGroup]="removeSharingFormGroup" (ngSubmit)="removeAlbumSharing()">
+    <input
+      type="email"
+      name="email"
+      placeholder="Enter user email to remove share rights"
+      formControlName="email"
+    />
+    <button type="submit">Send</button>
+    <button (click)="closeRemoveSharingAlbumForm()">Close</button>
+  </form>
+</div>
