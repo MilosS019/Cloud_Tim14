@@ -35,8 +35,22 @@ export class NavMenuComponent {
   }
 
   public fetchUsers() {
-    this.usersService.fetchUsers().subscribe((response) => {
-      console.log(response);
-    });
+    this.usersService.fetchUsers().subscribe(
+      (response) => {
+        console.log(response);
+      },
+      (err) => alert(err.error.message)
+    );
+  }
+
+  public goToAlbumsPage() {
+    this.router.navigate(['albums']);
+  }
+  public goToFileUploadPage() {
+    this.router.navigate(['file-upload']);
+  }
+
+  public goToCreateAlbumPage() {
+    this.router.navigate(['create-album']);
   }
 }

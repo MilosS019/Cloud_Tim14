@@ -1,0 +1,15 @@
+<div class="main-container">
+  <form
+    class="form-container"
+    [formGroup]="formGroup"
+    (ngSubmit)="createAlbum()"
+  >
+    <div class="form-field-container">
+      <label for="albumName">Album Name</label>
+      <input type="albumName" name="albumName" formControlName="albumName" />
+    </div>
+    <div class="buttons-layout">
+      <button type="submit" class="submit-button">Create Album</button>
+    </div>
+  </form>
+</div>

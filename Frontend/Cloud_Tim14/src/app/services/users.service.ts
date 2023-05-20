@@ -13,15 +13,10 @@ export class UsersService {
   constructor(private http: HttpClient) {}
 
   public saveUser(user: User): Observable<any> {
-    return this.http.post(
-      'https://u6w8pnhr47.execute-api.eu-central-1.amazonaws.com/dev/users',
-      user
-    );
+    return this.http.post(`${environment.baseUrl}users`, user);
   }
 
   public fetchUsers() {
-    return this.http.get(
-      'https://u6w8pnhr47.execute-api.eu-central-1.amazonaws.com/dev/users'
-    );
+    return this.http.get(`${environment.baseUrl}users`);
   }
 }

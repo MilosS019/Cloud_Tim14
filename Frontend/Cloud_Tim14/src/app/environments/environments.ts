@@ -1,7 +1,7 @@
 export const environment = {
-  baseUrl: 'hhttps://u6w8pnhr47.execute-api.eu-central-1.amazonaws.com/dev/',
+  baseUrl: 'https://xc3uqel7td.execute-api.eu-central-1.amazonaws.com/dev/',
   cognito: {
-    userPoolId: 'eu-central-1_saiG29N7N',
-    userPoolWebClientId: '743g0ulvj8p27edh3gr9bn7u6a',
+    userPoolId: 'eu-central-1_98pmewwXU',
+    userPoolWebClientId: '1i1975f11trcg30hpr1s1lacve',
   },
 };

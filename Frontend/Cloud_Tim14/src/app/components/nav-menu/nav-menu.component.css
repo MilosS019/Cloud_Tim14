@@ -14,10 +14,15 @@
 }
 
 .navbar-link {
-  margin-right: 10px;
+  font-weight: bold;
+  margin-right: 40px;
   text-decoration: none;
   color: #333;
   cursor: pointer;
+}
+
+a:hover {
+  color: #000000;
 }
 
 .navbar-link:last-child {

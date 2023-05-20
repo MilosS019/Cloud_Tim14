@@ -1,0 +1,80 @@
+.album-card {
+  position: relative;
+  width: 400px;
+  height: 200px;
+  overflow: hidden;
+  background-color: gray;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.album-count {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  padding: 1px;
+  color: #ffffff;
+}
+
+.album-details {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 10px;
+  color: #fff;
+}
+
+.album-title {
+  margin: 0;
+}
+
+.file-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 400px;
+  margin-bottom: 5px;
+  background-color: rgba(51, 51, 51, 255);
+  padding-bottom: 10px;
+}
+
+.file-actions i {
+  font-size: 20px;
+  cursor: pointer;
+  color: #999;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.file-actions i:hover {
+  color: white;
+}
+
+form {
+  display: inline-block;
+}
+
+input[type="email"] {
+  padding: 10px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+button {
+  margin-left: 5px;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #45a049;
+}

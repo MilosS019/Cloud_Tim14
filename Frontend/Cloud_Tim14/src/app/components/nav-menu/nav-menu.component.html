@@ -1,7 +1,9 @@
 <nav *ngIf="isAuthenticated()" class="navbar">
   <div class="navbar-left">
     <a (click)="fetchUsers()" class="navbar-link">Fetch Users</a>
-    <a href="#" class="navbar-link">About</a>
+    <a (click)="goToAlbumsPage()" class="navbar-link">Albums</a>
+    <a (click)="goToCreateAlbumPage()" class="navbar-link">Create Album</a>
+    <a (click)="goToFileUploadPage()" class="navbar-link">Upload File</a>
   </div>
   <div class="navbar-right">
     <a (click)="logOut()" class="navbar-link">Logout</a>

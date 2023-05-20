@@ -1,0 +1,6 @@
+<h1>{{ photoAlbum.name }}</h1>
+<div class="files-container">
+  <div *ngFor="let file of files" class="file-card">
+    <app-file [file]="file"></app-file>
+  </div>
+</div>

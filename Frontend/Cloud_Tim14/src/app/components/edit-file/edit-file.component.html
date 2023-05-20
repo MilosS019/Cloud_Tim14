@@ -1,0 +1,43 @@
+<div class="container">
+  <h2>Edit file</h2>
+  <form [formGroup]="formGroup" (ngSubmit)="updateFile()">
+    <div class="form-group">
+      <label for="fileName">Name:</label>
+      <input
+        type="text"
+        name="fileName"
+        placeholder="Enter file name"
+        formControlName="fileName"
+      />
+    </div>
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <textarea
+        id="description"
+        name="description"
+        placeholder="Enter description"
+        rows="4"
+        formControlName="description"
+      ></textarea>
+    </div>
+    <div class="form-group">
+      <label for="tag">Tags:</label>
+      <div class="tags-container">
+        <input
+          type="text"
+          name="tag"
+          placeholder="Enter tag"
+          formControlName="tag"
+        />
+        <button (click)="addTag()">Add</button>
+      </div>
+    </div>
+    <div *ngFor="let tag of tags; let i = index">
+      <p>
+        {{ i + 1 }}. {{ tag }}
+        <b style="cursor: pointer" (click)="removeTag(i)">remove</b>
+      </p>
+    </div>
+    <input type="submit" value="Edit File" />
+  </form>
+</div>
