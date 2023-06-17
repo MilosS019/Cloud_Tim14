@@ -1,5 +1,28 @@
+<h1>Albums</h1>
 <div class="albums-container">
   <div *ngFor="let album of albums">
     <app-album [album]="album"></app-album>
   </div>
+</div>
+<div id = "add-albums">
+  <app-create-albums (clicked)="addFolderClicked()"></app-create-albums>
+</div>
+<div *ngIf="showFolderCreationDialog">
+  <app-create-album (close)="closeFolderDialog()"></app-create-album>
+</div>
+
+<h1>Files</h1>
+<div *ngFor="let file of files" (click) = "openDescription(file)" class = "files"> 
+  <div class="file">
+    <img src = "../../../assets/images/txt.png" *ngIf="file[1] == 'txt'" class="txt">
+    
+    <img src = "../../../assets/images/img.png" *ngIf="file[1] == 'jpg'" class="img">
+    
+    <img src = "../../../assets/images/img.png" *ngIf="file[1] == 'png'" class="img">
+    <p>{{file[0]}}</p>
+  </div>
+</div>
+
+<div class="file_information" *ngIf="showFileInformationDialog">
+    <app-file (closing)="closeFileInformation()" [file]="selectedFile"></app-file>
 </div>

@@ -2,60 +2,66 @@
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
 />
-<div class="file-card">
-  <div class="file-details">
-    <h3>{{ file.name }}</h3>
-    <p>Type: {{ file.type }}</p>
-    <p>Size: {{ file.size }} bytes</p>
-    <p>Creation Date: {{ file.creationDate }}</p>
-    <p>Last Modified: {{ file.lastModifiedDate }}</p>
-    <p>Description: {{ file.description }}</p>
-    <p>Tags: {{ file.tags }}</p>
+<div class = "container">
+  <div class="file-card">
+    <div class="file-details">
+      <h3>{{ file.name }}</h3>
+      <p>Type: {{ file.type }}</p>
+      <p>Size: {{ file.size }} bytes</p>
+      <p>Creation Date: {{ file.creationDate }}</p>
+      <p>Last Modified: {{ file.lastModifiedDate }}</p>
+      <p>Description: {{ file.description }}</p>
+      <p>Tags: {{ file.tags }}</p>
+    </div>
+    <div class="file-actions">
+      <i (click)="openShareFileForm()" class="fas fa-share"></i>
+      <i (click)="openRemoveSharingFileForm()" class="fas fa-unlink"></i>
+      <i (click)="editFile()" class="fas fa-edit"></i>
+      <i (click)="downloadFile()" class="fa fa-download"></i>
+      <i (click)="openChangeAlbumForm()" class="fa fa-arrow-right"></i>
+      <i (click)="deleteFile()" class="fa fa-trash"></i>
+    </div>
   </div>
-  <div class="file-actions">
-    <i (click)="openShareFileForm()" class="fas fa-share"></i>
-    <i (click)="openRemoveSharingFileForm()" class="fas fa-unlink"></i>
-    <i (click)="editFile()" class="fas fa-edit"></i>
-    <i (click)="downloadFile()" class="fa fa-download"></i>
-    <i (click)="openChangeAlbumForm()" class="fa fa-arrow-right"></i>
-    <i (click)="deleteFile()" class="fa fa-trash"></i>
+
+  <div *ngIf="isShareFormDisplayed">
+    <form [formGroup]="shareFormGroup" (ngSubmit)="shareFile()">
+      <input
+        type="email"
+        name="email"
+        placeholder="Enter user email to add view rights"
+        formControlName="email"
+      />
+      <button type="submit">Send</button>
+      <button (click)="closeShareFileForm()">Close</button>
+    </form>
+  </div>
+
+  <div *ngIf="isRemoveSharingFormDisplayed" style="margin-top: 5px">
+    <form [formGroup]="removeSharingFormGroup" (ngSubmit)="removeFileSharing()">
+      <input
+        type="email"
+        name="email"
+        placeholder="Enter user email to remove share rights"
+        formControlName="email"
+      />
+      <button type="submit">Send</button>
+      <button (click)="closeRemoveSharingFileForm()">Close</button>
+    </form>
+  </div>
+
+  <div *ngIf="isChangeAlbumFromDisplayed" style="margin-top: 5px">
+    <form [formGroup]="changeAlbumFormGroup" (ngSubmit)="changeAlbum()">
+      <input
+        type="text"
+        placeholder="Enter album name"
+        formControlName="albumName"
+      />
+      <button type="submit">Send</button>
+      <button (click)="closeChangeAlbumForm()">Close</button>
+    </form>
   </div>
 </div>
 
-<div *ngIf="isShareFormDisplayed">
-  <form [formGroup]="shareFormGroup" (ngSubmit)="shareFile()">
-    <input
-      type="email"
-      name="email"
-      placeholder="Enter user email to add view rights"
-      formControlName="email"
-    />
-    <button type="submit">Send</button>
-    <button (click)="closeShareFileForm()">Close</button>
-  </form>
-</div>
-
-<div *ngIf="isRemoveSharingFormDisplayed" style="margin-top: 5px">
-  <form [formGroup]="removeSharingFormGroup" (ngSubmit)="removeFileSharing()">
-    <input
-      type="email"
-      name="email"
-      placeholder="Enter user email to remove share rights"
-      formControlName="email"
-    />
-    <button type="submit">Send</button>
-    <button (click)="closeRemoveSharingFileForm()">Close</button>
-  </form>
-</div>
-
-<div *ngIf="isChangeAlbumFromDisplayed" style="margin-top: 5px">
-  <form [formGroup]="changeAlbumFormGroup" (ngSubmit)="changeAlbum()">
-    <input
-      type="text"
-      placeholder="Enter album name"
-      formControlName="albumName"
-    />
-    <button type="submit">Send</button>
-    <button (click)="closeChangeAlbumForm()">Close</button>
-  </form>
+<div class="close" (click)="close()">
+  <img src="../../../assets/images/close.png" alt="">
 </div>

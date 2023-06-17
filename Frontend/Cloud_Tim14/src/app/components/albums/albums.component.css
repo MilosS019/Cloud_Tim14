@@ -1,6 +1,40 @@
+:host{
+  text-align: center;
+}
+
 .albums-container {
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
   margin-top: 10px;
+}
+
+#add-albums{
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  cursor: pointer;
+}
+
+.files{
+  text-align: center;
+  display: flex;
+  align-items: center;
+  display: inline-block;
+  margin: 15px;
+}
+
+.files img{
+  width: 60px;
+}
+
+.file{
+  width: auto;
+  display: inline-block;
+  cursor: pointer;
+}
+
+p{
+  padding: 0px;
+  margin: 3px;
 }

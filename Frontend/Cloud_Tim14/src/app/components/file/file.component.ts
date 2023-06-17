@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MyFile } from '../../models/myFile.model';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,6 +12,8 @@ export class FileComponent {
   isShareFormDisplayed: boolean = false;
   isRemoveSharingFormDisplayed: boolean = false;
   isChangeAlbumFromDisplayed: boolean = false;
+  @Output() closing:EventEmitter<boolean> = new EventEmitter<boolean>(); 
+
 
   shareFormGroup: FormGroup = new FormGroup({
     email: new FormControl(''),
@@ -70,4 +72,8 @@ export class FileComponent {
   }
 
   deleteFile(): void {}
+
+  close():void{
+    this.closing.emit(true);
+  }
 }
