@@ -6,6 +6,8 @@ from utility.utils import create_response
 def upload_file(event, contenxt):
     try:
         dynamodb = boto3.resource('dynamodb')
+        email = event['requestContext']['authorizer']['claims']['email']
+
         table = dynamodb.Table('meta-data')
 
         body = json.loads(event['body'])
@@ -19,7 +21,7 @@ def upload_file(event, contenxt):
         #<-- dodaj tags -->
         table.put_item(
             Item={
-                'emailAndName': path,
+                'emailAndName': email + path,
                 'type': type,
                 'size': size,
                 'lastModified': lastModified,

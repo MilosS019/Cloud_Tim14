@@ -8,7 +8,7 @@ import { FileService } from 'src/app/services/file.service';
   styleUrls: ['./create-album.component.css'],
 })
 export class CreateAlbumComponent {
-  @Output() close:EventEmitter<boolean> = new EventEmitter<boolean>(); 
+  @Output() close:EventEmitter<string> = new EventEmitter<string>(); 
   @Input() previousPath:string = "/";
   private formBuilder: FormBuilder = new FormBuilder();
   public formGroup: FormGroup = this.formBuilder.group({
@@ -28,11 +28,14 @@ export class CreateAlbumComponent {
       this.fileService.uploadFile(jsonData).subscribe(
         data => {
           console.log(data);
+          this.close.emit(this.formGroup.get("albumName")?.value)
         }
       );
   }
 
   closeFunction(){
-    this.close.emit(true);
+    this.close.emit("");
   }
+
+
 }

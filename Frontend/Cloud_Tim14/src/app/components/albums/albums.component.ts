@@ -13,7 +13,10 @@ export class AlbumsComponent implements OnInit{
   files:any = [];
   showFolderCreationDialog = false;
   showFileInformationDialog = false;
-  currentpath:string = "";
+  currentpath:string = "/";
+  rootFolder:string = "";
+  allFolders: any;
+  foldersSize: any;
   @Output() selectedFile!:MyFile;
   constructor(private fileService:FileService) {
   }
@@ -22,11 +25,12 @@ export class AlbumsComponent implements OnInit{
     this.fileService.getFolders().subscribe(
       {
         next: data => {
-          let rootFolder = data["folders"]["SignedUserEmail"];
-          this.currentpath = rootFolder + "/"
+          this.rootFolder = data["folders"]["SignedUserEmail"];
+          this.allFolders = data["folders"]
+          this.foldersSize = data["folders_size"]
           console.log(data)
-          for(let folder of data["folders"][rootFolder]){
-            let album: PhotoAlbum = { name: folder, numberOfFiles: 5 };
+          for(let folder of data["folders"][this.rootFolder]){
+            let album: PhotoAlbum = { name: folder, numberOfFiles: data["folders_size"][folder] };
             this.albums.push(album);
           }
           for(let file of data["files"]){
@@ -50,7 +54,11 @@ export class AlbumsComponent implements OnInit{
     this.showFolderCreationDialog = true;
   }
 
-  closeFolderDialog(){
+  closeFolderDialog(albumName:string){
+    if(albumName != ""){
+      let album: PhotoAlbum = { name: albumName, numberOfFiles: 0 };
+      this.albums.push(album)
+    }
     this.showFolderCreationDialog = false;
   }
 
@@ -78,5 +86,18 @@ export class AlbumsComponent implements OnInit{
 
   closeFileInformation(){
     this.showFileInformationDialog = false;
+  }
+
+  updateVisual(albumName:string){
+    this.currentpath += albumName + "/"
+    this.albums = []
+    this.files = []
+    console.log(this.allFolders[albumName])
+    for(let folder of this.allFolders[albumName]){
+      if(folder == "")
+        continue;
+      let album: PhotoAlbum = { name: folder, numberOfFiles: this.foldersSize[folder] };
+      this.albums.push(album);
+    }
   }
 }

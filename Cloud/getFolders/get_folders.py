@@ -12,7 +12,7 @@ def get_all_folders(event, context):
         email = keys[0].split("/")[0]
         folders, folders_size = getFoldersByLevel(keys, email)
         files = getFiles(email + "/")
-        return_obj = {"folders":folders, "folders_size":folders_size, "files": files}
+        return_obj = {"folders":folders, "folders_size": folders_size, "files": files}
         return create_response(200, return_obj)
     except Exception as e:
         return create_response(500, e)
@@ -29,7 +29,8 @@ def getFoldersByLevel(keys, email):
                 folder_size[prev_item] += 1
                 break
             folder_size[prev_item] += 1
-            folders[prev_item].append(items[index])
+            if(items[index] not in folders[prev_item]):
+                folders[prev_item].append(items[index])
             if items[index] not in folders:
                 folder_size[items[index]]  = 0
                 folders[items[index]] = []
@@ -45,6 +46,6 @@ def getFiles(folder_path):
     if 'Contents' in response:
         for obj in response['Contents']:
             if not obj['Key'].endswith('/'):  # Exclude subfolders
-                files.append(obj['Key'])
+                files.append(obj['Key'].replace(folder_path, ""))
 
     return files

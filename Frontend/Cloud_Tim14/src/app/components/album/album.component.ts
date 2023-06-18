@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PhotoAlbum } from '../../models/photoAlbum.model';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./album.component.css'],
 })
 export class AlbumComponent {
+  @Output() albumOpening :EventEmitter<string> = new EventEmitter();
   isShareFormDisplayed: boolean = false;
   isRemoveSharingFormDisplayed: boolean = false;
 
@@ -48,7 +49,6 @@ export class AlbumComponent {
   deleteAlbum(): void {}
 
   openAlbum(): void {
-    const queryParams = { object: JSON.stringify(this.album) };
-    this.router.navigate(['files'], { queryParams });
+    this.albumOpening.emit(this.album.name)
   }
 }

@@ -1,14 +1,14 @@
 <h1>Albums</h1>
 <div class="albums-container">
   <div *ngFor="let album of albums">
-    <app-album [album]="album"></app-album>
+    <app-album (albumOpening)="updateVisual($event)" [album]="album"></app-album>
   </div>
 </div>
 <div id = "add-albums">
   <app-create-albums (clicked)="addFolderClicked()"></app-create-albums>
 </div>
 <div *ngIf="showFolderCreationDialog">
-  <app-create-album (close)="closeFolderDialog()"></app-create-album>
+  <app-create-album [previousPath]="currentpath" (close)="closeFolderDialog($event)"></app-create-album>
 </div>
 
 <h1>Files</h1>
