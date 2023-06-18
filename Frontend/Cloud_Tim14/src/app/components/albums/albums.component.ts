@@ -13,10 +13,12 @@ export class AlbumsComponent implements OnInit{
   files:any = [];
   showFolderCreationDialog = false;
   showFileInformationDialog = false;
+  showUploadFileDialog = false;
   currentpath:string = "/";
   rootFolder:string = "";
   allFolders: any;
   foldersSize: any;
+  
   @Output() selectedFile!:MyFile;
   constructor(private fileService:FileService) {
   }
@@ -88,6 +90,12 @@ export class AlbumsComponent implements OnInit{
     this.showFileInformationDialog = false;
   }
 
+  closeFileUploadDialog(fileName:string){
+    this.files.push([fileName, fileName.split(".")[1]])
+    console.log(this.files)
+    this.showUploadFileDialog = false;
+  }
+
   updateVisual(albumName:string){
     this.currentpath += albumName + "/"
     this.albums = []
@@ -99,5 +107,24 @@ export class AlbumsComponent implements OnInit{
       let album: PhotoAlbum = { name: folder, numberOfFiles: this.foldersSize[folder] };
       this.albums.push(album);
     }
+    this.fileService.getFiles(this.currentpath).subscribe({
+      next: data => {
+        for(let file of data){
+          let file_path = file.split("/")
+            let file_name = file_path[file_path.length - 1]
+            let pair = []
+            pair.push(file_name)
+            pair.push(file_name.split(".")[1])
+            this.files.push(pair)
+        }
+      },
+      error: data=> {
+        console.log(data)
+      }
+    })
+  }
+
+  addFileClicked(){
+    this.showUploadFileDialog = true;
   }
 }

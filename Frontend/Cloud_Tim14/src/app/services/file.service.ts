@@ -27,4 +27,8 @@ export class FileService {
   public getMetaData(filepath:string):Observable<any>{
     return this.http.put(`${environment.baseUrl}metadata`, {"path":filepath});
   }
+
+  public getFiles(filepath:string):Observable<any>{
+    return this.http.put(`${environment.baseUrl}files`, {"path": filepath})
+  }
 }

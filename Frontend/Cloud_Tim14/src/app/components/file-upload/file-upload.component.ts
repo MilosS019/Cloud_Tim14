@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PutObjectCommand, CreateBucketCommand } from "@aws-sdk/client-s3";
 import { S3Client } from "@aws-sdk/client-s3";
@@ -17,6 +17,7 @@ export class FileUploadComponent {
   tag:FormControl = new FormControl('')
   tags:string[] = []
   @Input() path:string = "/";
+  @Output() closing:EventEmitter<string> = new EventEmitter<string>();  
   updatedPath:string = "/";
   file:File | undefined;
 
@@ -26,7 +27,6 @@ export class FileUploadComponent {
 
   onFileSelected(event:any) {
       this.file = event.target.files[0];
-      this.path = this.updatedPath
       if(this.file)
         this.fileName = this.file.name
     }
@@ -45,13 +45,14 @@ export class FileUploadComponent {
         description: this.description.value,
         tags: this.tags
       })
-
     const fileReader = new FileReader();
     await this.setUpFileReader(fileReader) 
     fileReader.readAsDataURL(this.file)
     this.fileService.uploadMetaData(fileInfoParams).subscribe(
       data => {
         console.log(data)
+        alert("File uploaded succsefully")
+        this.update();
       }
     );
 
@@ -83,4 +84,9 @@ export class FileUploadComponent {
     this.tags.splice(index,index + 1)
   }
 
+  update(){
+    this.closing.emit(this.fileName)
+  }
+
+  
 }

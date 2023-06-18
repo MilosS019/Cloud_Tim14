@@ -6,6 +6,7 @@
 </div>
 <div id = "add-albums">
   <app-create-albums (clicked)="addFolderClicked()"></app-create-albums>
+  <img src="../../../assets/images/upload.png" (click)="addFileClicked()" alt="upload">
 </div>
 <div *ngIf="showFolderCreationDialog">
   <app-create-album [previousPath]="currentpath" (close)="closeFolderDialog($event)"></app-create-album>
@@ -23,6 +24,14 @@
   </div>
 </div>
 
-<div class="file_information" *ngIf="showFileInformationDialog">
+<div class="file-information" *ngIf="showFileInformationDialog">
     <app-file (closing)="closeFileInformation()" [file]="selectedFile"></app-file>
 </div>
+
+<div class="file-upload" *ngIf="showUploadFileDialog">
+  <div class="file-upload-dialog">
+    <app-file-upload (closing)="closeFileUploadDialog($event)" [path]="currentpath"></app-file-upload>
+  </div>
+</div>
+
+<div id="footer"></div>

@@ -11,9 +11,25 @@
 
 #add-albums{
   position: fixed;
-  bottom: 20px;
-  left: 20px;
+  bottom: 10px;
+  left: 50%;
+  transform: translate(-50%,0);
   cursor: pointer;
+  z-index: 2;
+}
+
+#add-albums img{
+  width: 50px;
+  margin-left: 30px;
+}
+
+#footer{
+  position: fixed;
+  bottom: 0px;
+  width: 100vw;
+  height: 80px;
+  background-color: white;
+  z-index: 1;
 }
 
 .files{
@@ -22,6 +38,7 @@
   align-items: center;
   display: inline-block;
   margin: 15px;
+  margin-bottom: 80px;
 }
 
 .files img{
@@ -37,4 +54,33 @@
 p{
   padding: 0px;
   margin: 3px;
+} 
+
+.file-upload{
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.file-upload-dialog{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.file-information{
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
 }

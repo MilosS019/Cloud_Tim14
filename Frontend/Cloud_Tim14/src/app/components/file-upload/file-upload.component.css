@@ -42,5 +42,7 @@
 }
 
 #container{
-    margin-left: 20px;
+    background-color: #f5f5f5;
+    padding: 30px 15px;
+    border-radius: 20px;
 }
