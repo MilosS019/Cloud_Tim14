@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PutObjectCommand, CreateBucketCommand } from "@aws-sdk/client-s3";
 import { S3Client } from "@aws-sdk/client-s3";
+import { FileService } from 'src/app/services/file.service';
 
 @Component({
   selector: 'app-file-upload',
@@ -12,12 +13,15 @@ import { S3Client } from "@aws-sdk/client-s3";
 export class FileUploadComponent {
   
   fileName:string = '';
-  descritpion:FormControl = new FormControl('');
+  description:FormControl = new FormControl('');
   tag:FormControl = new FormControl('')
   tags:string[] = []
+  @Input() path:string = "/";
+  @Output() closing:EventEmitter<string> = new EventEmitter<string>();  
+  updatedPath:string = "/";
   file:File | undefined;
 
-  constructor() {
+  constructor(private fileService:FileService) {
 
   }
 
@@ -27,49 +31,49 @@ export class FileUploadComponent {
         this.fileName = this.file.name
     }
 
-  upload(){
+  async upload(){
     if (!this.file){
       alert("file not selected")
       return;
     }
-    const fileParams = {
-      Bucket: "cloud-project-files-bucket", // The name of the bucket. For example, 'sample-bucket-101'.
-      Key: this.file.name, // The name of the object. For example, 'sample_upload.txt'.
-      Body: this.file, // The content of the object. For example, 'Hello world!".
-    };
-
-    let name:string = this.file.name
-    let infoFileName:string = name.split(".")[0];
-    const fileInfoParams = { 
-      Bucket: "cloud-project-files-info",
-      Key: infoFileName + ".json",
-      Body: JSON.stringify({
-        name: infoFileName + ".json",
+    this.path += this.file.name
+    const fileInfoParams = JSON.stringify({
+        path: this.path,
         type: this.file.type,
         size: this.file.size,
         lastModified: this.file.lastModified,
-        descritpion: this.descritpion.value,
+        description: this.description.value,
         tags: this.tags
       })
-    }
-    let s3Client:S3Client;
-    s3Client = new S3Client({region:"eu-north-1", credentials:{
-      accessKeyId: "",
-      secretAccessKey: ""
-    }})
-    this.fileUpload(s3Client, fileParams);
-    this.fileUpload(s3Client, fileInfoParams);
+    const fileReader = new FileReader();
+    await this.setUpFileReader(fileReader) 
+    fileReader.readAsDataURL(this.file)
+    this.fileService.uploadMetaData(fileInfoParams).subscribe(
+      data => {
+        console.log(data)
+        alert("File uploaded succsefully")
+        this.update();
+      }
+    );
+
   }
 
-  async fileUpload(s3Client:S3Client, params:any){
-    try {
-      const results = await s3Client.send(new PutObjectCommand(params));
-      console.log("Successfully created " + params.Key + " and uploaded it to " + params.Bucket + "/" + params.Key);
-      return results; 
-    } catch (err) {
-      console.log("Error", err);
-    }
-    return;
+  async setUpFileReader(fileReader:FileReader){
+    fileReader.onload = () => {
+      const fileData = fileReader.result;
+      const payload = {
+        file: fileData,
+        path: this.path
+      };
+    
+      const jsonData = JSON.stringify(payload);
+    
+      this.fileService.uploadFile(jsonData).subscribe(
+        data => {
+          console.log(data);
+        }
+      );
+    };
   }
 
   addTag(){
@@ -80,4 +84,9 @@ export class FileUploadComponent {
     this.tags.splice(index,index + 1)
   }
 
+  update(){
+    this.closing.emit(this.fileName)
+  }
+
+  
 }

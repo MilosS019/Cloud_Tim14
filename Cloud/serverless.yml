@@ -11,20 +11,43 @@ provider:
   timeout: 10
   environment:
     USER_TABLE: !Ref userTable
-  iam:
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - dynamodb:DescribeTable
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:GetItem
-            - dynamodb:PutItem
-            - dynamodb:UpdateItem
-            - dynamodb:DeleteItem
-          Resource:
-            - "Fn::GetAtt": [userTable, Arn]
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "Fn::GetAtt": [userTable, Arn]
+        
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "Fn::GetAtt": [DynamoDbMetaData, Arn]
+
+    - Effect: Allow
+      Action:
+        - s3:ListBucket
+        - s3:GetObject
+        - s3:GetObjectAcl
+        - s3:PutObject
+        - s3:PutObjectAcl
+        - s3:DeleteObject
+      Resource:
+        - "arn:aws:s3:::tim7-project-files-bucket"
+        - "arn:aws:s3:::tim7-project-files-bucket/*"
+
 
 # Packaging global configuration
 package:
@@ -72,6 +95,103 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
 
+  getFolders:
+    handler: getFolders/get_folders.get_all_folders
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "getFolders/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: folders
+          # HTTP method for this endpoint
+          method: get
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  
+  getFiles:
+    handler: getFiles/get_files.get_files
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "getFiles/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: files
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  getMetaData:
+    handler: getMetaData/get_metadata.get_metadata
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "getMetaData/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: metadata
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  uploadMetaData:
+    handler: metaDataUpload/upload_meta_data.upload_file
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "metaDataUpload/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: upload-metadata
+          # HTTP method for this endpoint
+          method: post
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+  
+  uploadFile:
+    handler: fileUpload/upload_file.upload_file
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "fileUpload/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: upload-file
+          # HTTP method for this endpoint
+          method: post
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
 resources:
   Resources:
     userTable:
@@ -87,7 +207,38 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+    
+    DynamoDbMetaData:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: meta-data
+        AttributeDefinitions:
+          - AttributeName: emailAndName
+            AttributeType: S
 
+        KeySchema:
+          - AttributeName: emailAndName
+            KeyType: HASH
+
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    
+    S3BucketForFiles:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: tim7-project-files-bucket
+        AccessControl: Private
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods:
+                - GET
+                - PUT
+                - POST
+                - DELETE
+              AllowedOrigins:
+                - '*'
+        
     MyUserPool:
       Type: AWS::Cognito::UserPool
       Properties:

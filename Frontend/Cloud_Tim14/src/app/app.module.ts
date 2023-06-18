@@ -18,6 +18,8 @@ import { AlbumsComponent } from './components/albums/albums.component';
 import { CreateAlbumComponent } from './components/create-album/create-album.component';
 import { FileEditComponent } from './components/file-edit/file-edit.component';
 import { EditFileComponent } from './components/edit-file/edit-file.component';
+import { CreateAlbumsComponent } from './components/create-albums/create-albums.component';
+import { FileDetailsComponent } from './components/file-details/file-details.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,8 @@ import { EditFileComponent } from './components/edit-file/edit-file.component';
     CreateAlbumComponent,
     FileEditComponent,
     EditFileComponent,
+    CreateAlbumsComponent,
+    FileDetailsComponent,
   ],
   imports: [
     BrowserModule,
