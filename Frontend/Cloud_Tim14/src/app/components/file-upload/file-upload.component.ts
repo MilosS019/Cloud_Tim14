@@ -45,6 +45,7 @@ export class FileUploadComponent {
         description: this.description.value,
         tags: this.tags
       })
+    console.log(this.path)
     const fileReader = new FileReader();
     await this.setUpFileReader(fileReader) 
     fileReader.readAsDataURL(this.file)

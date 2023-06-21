@@ -5,11 +5,12 @@ from utility.utils import create_response
 def get_all_folders(event, context):
     try:
         s3 = boto3.client('s3')
-        response = s3.list_objects_v2(Bucket="tim7-project-files-bucket")
+        email = event['requestContext']['authorizer']['claims']['email']
+        response = s3.list_objects_v2(Bucket="tim7-project-files-bucket", Prefix = email + "/")
         keys = []
         if 'Contents' in response:
             keys = [obj['Key'] for obj in response['Contents']]
-        email = keys[0].split("/")[0]
+
         folders, folders_size = getFoldersByLevel(keys, email)
         files = getFiles(email + "/")
         return_obj = {"folders":folders, "folders_size": folders_size, "files": files}

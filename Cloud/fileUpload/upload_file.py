@@ -7,7 +7,7 @@ from utility.utils import create_response
 def upload_file(event, context):
     try:
         s3 = boto3.client('s3')
-
+        print(event)
         file_object = json.loads(event['body'])
         file = file_object["file"]
         path = file_object["path"]

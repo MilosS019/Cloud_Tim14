@@ -13,6 +13,7 @@ export class FileComponent {
   isRemoveSharingFormDisplayed: boolean = false;
   isChangeAlbumFromDisplayed: boolean = false;
   @Output() closing:EventEmitter<boolean> = new EventEmitter<boolean>(); 
+  @Output() download:EventEmitter<string> = new EventEmitter<string>();
 
 
   shareFormGroup: FormGroup = new FormGroup({
@@ -64,7 +65,9 @@ export class FileComponent {
     this.router.navigate(['file-edit'], { queryParams });
   }
 
-  downloadFile(): void {}
+  downloadFile(): void {
+    this.download.emit(this.file.name);
+  }
 
   changeAlbum(): void {
     let albumName: string = this.changeAlbumFormGroup.value.albumName;

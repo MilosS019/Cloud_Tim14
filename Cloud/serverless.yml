@@ -5,6 +5,12 @@ provider:
   name: aws
   runtime: python3.7
   profile: Martic
+  apiGateway:
+    binaryMediaTypes:
+      - 'application/octet-stream'
+      - 'image/jpeg'
+      - 'image/png'
+      - '*/*'
   stage: dev
   region: eu-central-1
   memorySize: 128
@@ -134,6 +140,25 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
 
+  downloadFiles:
+    handler: fileDownload/download_file.download_file
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "fileDownload/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: download
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+  
   getMetaData:
     handler: getMetaData/get_metadata.get_metadata
     package:
