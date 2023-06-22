@@ -3,7 +3,7 @@ import boto3
 from boto3.dynamodb.conditions import Key
 
 
-def create_response(status, body):
+def create_response(status, body, contentType=""):
     return {
         'statusCode': status,
         'headers': {

@@ -15,9 +15,10 @@ export class AlbumsComponent implements OnInit{
   showFileInformationDialog = false;
   showUploadFileDialog = false;
   currentpath:string = "/";
-  rootFolder:string = "";
   allFolders: any;
   foldersSize: any;
+  pathHistory: Array<string> = []
+  currentAlbum = ""
   
   @Output() selectedFile!:MyFile;
   constructor(private fileService:FileService) {
@@ -27,11 +28,13 @@ export class AlbumsComponent implements OnInit{
     this.fileService.getFolders().subscribe(
       {
         next: data => {
-          this.rootFolder = data["folders"]["SignedUserEmail"];
+          let rootFolder = data["folders"]["SignedUserEmail"];
+          this.currentAlbum = rootFolder
           this.allFolders = data["folders"]
           this.foldersSize = data["folders_size"]
+          this.pathHistory.push(rootFolder)
           console.log(data)
-          for(let folder of data["folders"][this.rootFolder]){
+          for(let folder of data["folders"][rootFolder]){
             let album: PhotoAlbum = { name: folder, numberOfFiles: data["folders_size"][folder] };
             this.albums.push(album);
           }
@@ -97,10 +100,8 @@ export class AlbumsComponent implements OnInit{
   }
 
   updateVisual(albumName:string){
-    this.currentpath += albumName + "/"
     this.albums = []
     this.files = []
-    console.log(this.allFolders[albumName])
     for(let folder of this.allFolders[albumName]){
       if(folder == "")
         continue;
@@ -124,7 +125,75 @@ export class AlbumsComponent implements OnInit{
     })
   }
 
+  changeFolder(albumName:string){
+    this.currentpath += albumName + "/"
+    this.pathHistory.push(this.currentAlbum)
+    this.currentAlbum = albumName
+    this.updateVisual(albumName)
+  }
+
+  goBack(){
+    if(this.pathHistory.length == 0)
+      return
+    this.currentAlbum = this.pathHistory.pop()!
+    let indexOfSlash = this.currentpath.lastIndexOf("/")
+    this.currentpath = this.currentpath.slice(0, indexOfSlash)
+    indexOfSlash = this.currentpath.lastIndexOf("/")
+    this.currentpath = this.currentpath.slice(0, indexOfSlash + 1)    
+    this.updateVisual(this.currentAlbum)
+  }
+
   addFileClicked(){
     this.showUploadFileDialog = true;
+  }
+
+  handleFileDownload(response: any, filename:string): void {
+    console.log(response)
+    let extension = filename.split(".")[1]
+    const file = this.decodeFile(response, extension)
+    const fileUrl = URL.createObjectURL(file);
+
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = filename; // Set the desired file name
+    link.click();
+
+    URL.revokeObjectURL(fileUrl);
+  }
+  
+  getUintValue(response:any){
+    const byteCharacters = atob(response);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    return byteArray
+  }
+
+  decodeFile(response:any, extension:string){
+    response = this.getUintValue(response)
+    if(extension == "txt")
+      return new Blob([response], { type: 'text/plain' });
+    else if(extension == "png")
+      return new Blob([response], { type: 'image/png' });
+    else if(extension == "jpeg")
+      return new Blob([response], { type : 'image/jpeg' })
+    else if(extension == "jpg")
+      return new Blob([response], { type : 'image/jpg' })
+    else      
+      return new Blob([response], { type : 'application/octet-stream' })
+  }
+
+  download(fileName:string){
+    console.log(this.currentpath + fileName)
+    this.fileService.downloadFiles(this.currentpath + fileName).subscribe({
+      next: data => {
+        this.handleFileDownload(data, fileName)
+      },
+      error: data => {
+
+      }
+    })
   }
 }

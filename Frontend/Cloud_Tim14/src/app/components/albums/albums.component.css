@@ -84,3 +84,17 @@ p{
   left: 0;
   z-index: 999;
 }
+
+#back{
+  position: fixed;
+  height: 60px;
+  width: 60px;
+  left: 10px;
+  top: 50px;
+}
+
+#back img{
+  cursor: pointer;
+  height: 60px;
+  width: 60px;
+}

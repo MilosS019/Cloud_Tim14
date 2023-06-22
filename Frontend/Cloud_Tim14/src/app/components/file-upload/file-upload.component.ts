@@ -36,41 +36,56 @@ export class FileUploadComponent {
       alert("file not selected")
       return;
     }
-    this.path += this.file.name
     const fileInfoParams = JSON.stringify({
-        path: this.path,
+        path: this.path + this.file.name,
         type: this.file.type,
         size: this.file.size,
         lastModified: this.file.lastModified,
         description: this.description.value,
         tags: this.tags
       })
+    console.log(this.path)
     const fileReader = new FileReader();
-    await this.setUpFileReader(fileReader) 
+    await this.setUpFileReader(fileReader, fileInfoParams) 
     fileReader.readAsDataURL(this.file)
-    this.fileService.uploadMetaData(fileInfoParams).subscribe(
-      data => {
-        console.log(data)
-        alert("File uploaded succsefully")
-        this.update();
-      }
-    );
+    // const formData : FormData = new FormData;
+    // formData.append('file', this.file)
+    // formData.append('path', this.path)
+    // console.log(formData)
+    // this.fileService.uploadFile(formData).subscribe({
+    //   next: data =>{
+        // this.fileService.uploadMetaData(fileInfoParams).subscribe(
+        //   data => {
+        //     console.log(data)
+        //     alert("File uploaded succsefully")
+        //     this.update();
+        //   }
+        // );
+    //   }
+    // })
 
   }
 
-  async setUpFileReader(fileReader:FileReader){
+  async setUpFileReader(fileReader:FileReader, fileInfoParams:any){
     fileReader.onload = () => {
       const fileData = fileReader.result;
+      console.log(fileData)
       const payload = {
         file: fileData,
-        path: this.path
+        path: this.path + this.file?.name
       };
     
       const jsonData = JSON.stringify(payload);
     
       this.fileService.uploadFile(jsonData).subscribe(
         data => {
-          console.log(data);
+          this.fileService.uploadMetaData(fileInfoParams).subscribe(
+            data => {
+              console.log(data)
+              alert("File uploaded succsefully")
+              this.update();
+            }
+          );
         }
       );
     };
