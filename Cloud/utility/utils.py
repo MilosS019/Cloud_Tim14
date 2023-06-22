@@ -1,6 +1,6 @@
 import json
 
-def create_response(status, body):
+def create_response(status, body, contentType = ""):
     return { 
         'statusCode': status, 
         'headers': {

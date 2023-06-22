@@ -147,8 +147,10 @@ export class AlbumsComponent implements OnInit{
     this.showUploadFileDialog = true;
   }
 
-  handleFileDownload(response: ArrayBuffer, filename:string): void {
-    const file = new Blob([response], { type: 'application/octet-stream' });
+  handleFileDownload(response: any, filename:string): void {
+    console.log(response)
+    let extension = filename.split(".")[1]
+    const file = this.decodeFile(response, extension)
     const fileUrl = URL.createObjectURL(file);
 
     const link = document.createElement('a');
@@ -157,6 +159,19 @@ export class AlbumsComponent implements OnInit{
     link.click();
 
     URL.revokeObjectURL(fileUrl);
+  }
+  
+  decodeFile(response:any, extension:string){
+    if(extension == "txt")
+      return new Blob([response], { type: 'text/plain' });
+    else if(extension == "png")
+      return new Blob([response], { type: 'image/png' });
+    else if(extension == "jpeg")
+      return new Blob([response], { type : 'image/jpeg' })
+    else if(extension == "jpg")
+      return new Blob([response], { type : 'image/jpg' })
+    else      
+      return new Blob([response], { type : 'application/octet-stream' })
   }
 
   download(fileName:string){
