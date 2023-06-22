@@ -33,6 +33,6 @@ export class FileService {
   }
 
   public downloadFiles(filepath:string):Observable<any>{
-    return this.http.put(`${environment.baseUrl}download`, {"path": filepath}, {responseType: "blob"});
+    return this.http.put(`${environment.baseUrl}download`, {"path": filepath});
   }
 }

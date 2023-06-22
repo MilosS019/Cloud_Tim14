@@ -18,6 +18,8 @@ def download_file(event, context):
 
         with open(temp_file_path, 'rb') as file:
             file_data = file.read()
+            base64_encoded_data = base64.b64encode(file_data)
+            file_data = base64_encoded_data.decode('utf-8')
 
         return create_response(200, file_data)
 

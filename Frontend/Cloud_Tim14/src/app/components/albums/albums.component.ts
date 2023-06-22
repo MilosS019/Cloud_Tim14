@@ -161,7 +161,18 @@ export class AlbumsComponent implements OnInit{
     URL.revokeObjectURL(fileUrl);
   }
   
+  getUintValue(response:any){
+    const byteCharacters = atob(response);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    return byteArray
+  }
+
   decodeFile(response:any, extension:string){
+    response = this.getUintValue(response)
     if(extension == "txt")
       return new Blob([response], { type: 'text/plain' });
     else if(extension == "png")
