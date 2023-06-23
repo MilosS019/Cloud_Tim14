@@ -12,7 +12,14 @@ import { environment } from '../environments/environments';
 export class UsersService {
   constructor(private http: HttpClient) {}
 
-  public saveUser(user: User): Observable<any> {
+  public saveUser(user: any): Observable<any> {
+    user = {
+      email: 'value1',
+      password: 'value1',
+      name: 'value1',
+      lastname: 'value1',
+      birthday: 'value1',
+    };
     return this.http.post(`${environment.baseUrl}users`, user);
   }
 
