@@ -23,7 +23,19 @@ provider:
         - dynamodb:DeleteItem
       Resource:
         - "Fn::GetAtt": [userTable, Arn]
-        
+
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "Fn::GetAtt": [FilePermissionsTable, Arn]
+
     - Effect: Allow
       Action:
         - dynamodb:DescribeTable
@@ -47,7 +59,6 @@ provider:
       Resource:
         - "arn:aws:s3:::tim7-project-files-bucket"
         - "arn:aws:s3:::tim7-project-files-bucket/*"
-
 
 # Packaging global configuration
 package:
@@ -76,6 +87,7 @@ functions:
           method: post
           # Enable CORS. Don't forget to return the right header in your response
           cors: true
+
   getUsers:
     handler: getUsers/get_users.get_all_users
     package:
@@ -91,9 +103,6 @@ functions:
           method: get
           # Enable CORS. Don't forget to return the right header in your response
           cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId: { Ref: MyApiGatewayAuthorizer }
 
   getFolders:
     handler: getFolders/get_folders.get_all_folders
@@ -114,7 +123,6 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
 
-  
   getFiles:
     handler: getFiles/get_files.get_files
     package:
@@ -126,6 +134,25 @@ functions:
       - http:
           # Path for this endpoint
           path: files
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  downloadFiles:
+    handler: fileDownload/download_file.download_file
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "fileDownload/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: download
           # HTTP method for this endpoint
           method: put
           # Enable CORS. Don't forget to return the right header in your response
@@ -171,7 +198,7 @@ functions:
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
-  
+
   uploadFile:
     handler: fileUpload/upload_file.upload_file
     package:
@@ -192,6 +219,33 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
 
+  addPermission:
+    handler: addViewPermission/add_view_permission.add_permission
+    package:
+      include: "addViewPermission/**"
+    events:
+      - http:
+          path: file-permission
+          method: post
+          cors: true
+
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  removePermission:
+    handler: removeViewPermission/remove_view_permission.remove_permission
+    package:
+      include: "removeViewPermission/**"
+    events:
+      - http:
+          path: file-permission
+          method: delete
+          cors: true
+
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
 resources:
   Resources:
     userTable:
@@ -207,7 +261,25 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-    
+
+    FilePermissionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: file-permissions
+        AttributeDefinitions:
+          - AttributeName: granted_user
+            AttributeType: S
+          - AttributeName: file_path
+            AttributeType: S
+        KeySchema:
+          - AttributeName: granted_user
+            KeyType: HASH
+          - AttributeName: file_path
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
     DynamoDbMetaData:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -223,7 +295,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-    
+
     S3BucketForFiles:
       Type: AWS::S3::Bucket
       Properties:
@@ -237,8 +309,8 @@ resources:
                 - POST
                 - DELETE
               AllowedOrigins:
-                - '*'
-        
+                - "*"
+
     MyUserPool:
       Type: AWS::Cognito::UserPool
       Properties:

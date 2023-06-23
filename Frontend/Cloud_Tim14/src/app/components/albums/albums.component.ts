@@ -8,66 +8,67 @@ import { MyFile } from 'src/app/models/myFile.model';
   templateUrl: './albums.component.html',
   styleUrls: ['./albums.component.css'],
 })
-export class AlbumsComponent implements OnInit{
+export class AlbumsComponent implements OnInit {
   albums: Array<PhotoAlbum> = [];
-  files:any = [];
+  files: any = [];
   showFolderCreationDialog = false;
   showFileInformationDialog = false;
   showUploadFileDialog = false;
-  currentpath:string = "/";
-  rootFolder:string = "";
+  currentpath: string = '/';
   allFolders: any;
   foldersSize: any;
-  
-  @Output() selectedFile!:MyFile;
-  constructor(private fileService:FileService) {
-  }
-  
-  ngOnInit(){
-    this.fileService.getFolders().subscribe(
-      {
-        next: data => {
-          this.rootFolder = data["folders"]["SignedUserEmail"];
-          this.allFolders = data["folders"]
-          this.foldersSize = data["folders_size"]
-          console.log(data)
-          for(let folder of data["folders"][this.rootFolder]){
-            let album: PhotoAlbum = { name: folder, numberOfFiles: data["folders_size"][folder] };
-            this.albums.push(album);
-          }
-          for(let file of data["files"]){
-            let file_path = file.split("/")
-            let file_name = file_path[file_path.length - 1]
-            let pair = []
-            pair.push(file_name)
-            pair.push(file_name.split(".")[1])
-            this.files.push(pair) 
-          }
-          console.log(this.files)
-        },
-        error(data) {
+  pathHistory: Array<string> = [];
+  currentAlbum = '';
 
+  @Output() selectedFile!: MyFile;
+  constructor(private fileService: FileService) {}
+
+  ngOnInit() {
+    this.fileService.getFolders().subscribe({
+      next: (data) => {
+        let rootFolder = data['folders']['SignedUserEmail'];
+        this.currentAlbum = rootFolder;
+        this.allFolders = data['folders'];
+        this.foldersSize = data['folders_size'];
+        this.pathHistory.push(rootFolder);
+        console.log(data);
+        for (let folder of data['folders'][rootFolder]) {
+          let album: PhotoAlbum = {
+            name: folder,
+            numberOfFiles: data['folders_size'][folder],
+          };
+          this.albums.push(album);
         }
-      }
-    )
+        for (let file of data['files']) {
+          let file_path = file.split('/');
+          let file_name = file_path[file_path.length - 1];
+          let pair = [];
+          pair.push(file_name);
+          pair.push(file_name.split('.')[1]);
+          this.files.push(pair);
+        }
+        console.log(this.files);
+      },
+      error(data) {},
+    });
   }
 
-  addFolderClicked(){
+  addFolderClicked() {
     this.showFolderCreationDialog = true;
   }
 
-  closeFolderDialog(albumName:string){
-    if(albumName != ""){
+  closeFolderDialog(albumName: string) {
+    if (albumName != '') {
       let album: PhotoAlbum = { name: albumName, numberOfFiles: 0 };
-      this.albums.push(album)
+      this.albums.push(album);
     }
     this.showFolderCreationDialog = false;
   }
 
-  openDescription(file:any){
+  openDescription(file: any) {
     this.fileService.getMetaData(this.currentpath + file[0]).subscribe({
-      next: data => {
-        console.log(data)
+      next: (data) => {
+        console.log(data);
         let fileInfo: MyFile = {
           name: file[0],
           size: data.Item.size,
@@ -80,51 +81,112 @@ export class AlbumsComponent implements OnInit{
         this.selectedFile = fileInfo;
         this.showFileInformationDialog = true;
       },
-      error: data => {
-
-      }
+      error: (data) => {},
     });
   }
 
-  closeFileInformation(){
+  closeFileInformation() {
     this.showFileInformationDialog = false;
   }
 
-  closeFileUploadDialog(fileName:string){
-    this.files.push([fileName, fileName.split(".")[1]])
-    console.log(this.files)
+  closeFileUploadDialog(fileName: string) {
+    this.files.push([fileName, fileName.split('.')[1]]);
+    console.log(this.files);
     this.showUploadFileDialog = false;
   }
 
-  updateVisual(albumName:string){
-    this.currentpath += albumName + "/"
-    this.albums = []
-    this.files = []
-    console.log(this.allFolders[albumName])
-    for(let folder of this.allFolders[albumName]){
-      if(folder == "")
-        continue;
-      let album: PhotoAlbum = { name: folder, numberOfFiles: this.foldersSize[folder] };
+  updateVisual(albumName: string) {
+    this.albums = [];
+    this.files = [];
+    for (let folder of this.allFolders[albumName]) {
+      if (folder == '') continue;
+      let album: PhotoAlbum = {
+        name: folder,
+        numberOfFiles: this.foldersSize[folder],
+      };
       this.albums.push(album);
     }
     this.fileService.getFiles(this.currentpath).subscribe({
-      next: data => {
-        for(let file of data){
-          let file_path = file.split("/")
-            let file_name = file_path[file_path.length - 1]
-            let pair = []
-            pair.push(file_name)
-            pair.push(file_name.split(".")[1])
-            this.files.push(pair)
+      next: (data) => {
+        for (let file of data) {
+          let file_path = file.split('/');
+          let file_name = file_path[file_path.length - 1];
+          let pair = [];
+          pair.push(file_name);
+          pair.push(file_name.split('.')[1]);
+          this.files.push(pair);
         }
       },
-      error: data=> {
-        console.log(data)
-      }
-    })
+      error: (data) => {
+        console.log(data);
+      },
+    });
   }
 
-  addFileClicked(){
+  changeFolder(albumName: string) {
+    this.currentpath += albumName + '/';
+    this.pathHistory.push(this.currentAlbum);
+    this.currentAlbum = albumName;
+    this.updateVisual(albumName);
+  }
+
+  goBack() {
+    if (this.pathHistory.length == 0) return;
+    this.currentAlbum = this.pathHistory.pop()!;
+    let indexOfSlash = this.currentpath.lastIndexOf('/');
+    this.currentpath = this.currentpath.slice(0, indexOfSlash);
+    indexOfSlash = this.currentpath.lastIndexOf('/');
+    this.currentpath = this.currentpath.slice(0, indexOfSlash + 1);
+    this.updateVisual(this.currentAlbum);
+  }
+
+  addFileClicked() {
     this.showUploadFileDialog = true;
+  }
+
+  handleFileDownload(response: any, filename: string): void {
+    console.log(response);
+    let extension = filename.split('.')[1];
+    const file = this.decodeFile(response, extension);
+    const fileUrl = URL.createObjectURL(file);
+
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = filename; // Set the desired file name
+    link.click();
+
+    URL.revokeObjectURL(fileUrl);
+  }
+
+  getUintValue(response: any) {
+    const byteCharacters = atob(response);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    return byteArray;
+  }
+
+  decodeFile(response: any, extension: string) {
+    response = this.getUintValue(response);
+    if (extension == 'txt') return new Blob([response], { type: 'text/plain' });
+    else if (extension == 'png')
+      return new Blob([response], { type: 'image/png' });
+    else if (extension == 'jpeg')
+      return new Blob([response], { type: 'image/jpeg' });
+    else if (extension == 'jpg')
+      return new Blob([response], { type: 'image/jpg' });
+    else return new Blob([response], { type: 'application/octet-stream' });
+  }
+
+  download(fileName: string) {
+    console.log(this.currentpath + fileName);
+    this.fileService.downloadFiles(this.currentpath + fileName).subscribe({
+      next: (data) => {
+        this.handleFileDownload(data, fileName);
+      },
+      error: (data) => {},
+    });
   }
 }

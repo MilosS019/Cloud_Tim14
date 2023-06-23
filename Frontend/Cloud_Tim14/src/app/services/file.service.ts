@@ -31,4 +31,8 @@ export class FileService {
   public getFiles(filepath:string):Observable<any>{
     return this.http.put(`${environment.baseUrl}files`, {"path": filepath})
   }
+
+  public downloadFiles(filepath:string):Observable<any>{
+    return this.http.put(`${environment.baseUrl}download`, {"path": filepath});
+  }
 }

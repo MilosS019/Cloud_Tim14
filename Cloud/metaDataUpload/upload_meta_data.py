@@ -29,7 +29,7 @@ def upload_file(event, contenxt):
             })
 
 
-    # return a properly formatted JSON object
+    # # return a properly formatted JSON object
         message = 'Metadata uploaded succesfully'
         return create_response(200, message)
     

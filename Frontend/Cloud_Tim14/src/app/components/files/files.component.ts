@@ -11,6 +11,7 @@ import { PhotoAlbum } from '../../models/photoAlbum.model';
 export class FilesComponent implements OnInit {
   files: Array<MyFile> = new Array();
   photoAlbum: PhotoAlbum = {} as PhotoAlbum;
+  
 
   ngOnInit(): void {
     this.activatedRouter.queryParams.subscribe((params) => {

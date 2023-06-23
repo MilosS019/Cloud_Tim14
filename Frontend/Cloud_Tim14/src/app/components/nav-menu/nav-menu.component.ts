@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { CognitoService } from '../../services/cognito.service';
 import { Router } from '@angular/router';
 import { UsersService } from '../../services/users.service';
-
+import { PermissionService } from '../../services/permission.service';
+import { User } from '../../models/user.model';
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
@@ -12,7 +13,8 @@ export class NavMenuComponent {
   constructor(
     private cognitoService: CognitoService,
     private router: Router,
-    private usersService: UsersService
+    private usersService: UsersService,
+    private permissionService: PermissionService
   ) {}
 
   public isAuthenticated(): boolean {
@@ -35,12 +37,12 @@ export class NavMenuComponent {
   }
 
   public fetchUsers() {
-    this.usersService.fetchUsers().subscribe(
-      (response) => {
-        console.log(response);
-      },
-      (err) => alert(err.error.message)
-    );
+    // this.usersService.fetchUsers().subscribe(
+    //   (response) => {
+    //     console.log(response);
+    //   },
+    //   (err) => alert(err.error.message)
+    // );
   }
 
   public goToAlbumsPage() {
