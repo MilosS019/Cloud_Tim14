@@ -246,6 +246,20 @@ functions:
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  getPermission:
+    handler: getViewPermission/get_view_permission.get_permissions
+    package:
+      include: "getViewPermission/**"
+    events:
+      - http:
+          path: file-permission
+          method: get
+          cors: true
+
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
 resources:
   Resources:
     userTable:

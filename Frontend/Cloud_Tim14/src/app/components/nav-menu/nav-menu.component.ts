@@ -37,12 +37,12 @@ export class NavMenuComponent {
   }
 
   public fetchUsers() {
-    // this.usersService.fetchUsers().subscribe(
-    //   (response) => {
-    //     console.log(response);
-    //   },
-    //   (err) => alert(err.error.message)
-    // );
+    this.usersService.fetchUsers().subscribe(
+      (response) => {
+        console.log(response);
+      },
+      (err) => alert(err.error.message)
+    );
   }
 
   public goToAlbumsPage() {
