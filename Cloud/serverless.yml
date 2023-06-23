@@ -87,6 +87,7 @@ functions:
           method: post
           # Enable CORS. Don't forget to return the right header in your response
           cors: true
+
   getUsers:
     handler: getUsers/get_users.get_all_users
     package:
@@ -102,9 +103,6 @@ functions:
           method: get
           # Enable CORS. Don't forget to return the right header in your response
           cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId: { Ref: MyApiGatewayAuthorizer }
 
   getFolders:
     handler: getFolders/get_folders.get_all_folders
@@ -162,7 +160,7 @@ functions:
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
-  
+
   getMetaData:
     handler: getMetaData/get_metadata.get_metadata
     package:
@@ -221,7 +219,7 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
 
-  addViewPermission:
+  addPermission:
     handler: addViewPermission/add_view_permission.add_permission
     package:
       include: "addViewPermission/**"
@@ -234,7 +232,8 @@ functions:
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
-  removeViewPermission:
+
+  removePermission:
     handler: removeViewPermission/remove_view_permission.remove_permission
     package:
       include: "removeViewPermission/**"

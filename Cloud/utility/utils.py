@@ -15,14 +15,15 @@ def create_response(status, body, contentType=""):
 
 def get_logged_user_email(event):
     login_user_email = event['requestContext']['authorizer']['claims']['email']
+    return login_user_email
 
 
-def query_table(table_name, key=None, value=None):
+def query_table(table_name, key, value):
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table(table_name)
 
-    if key is not None and value is not None:
-        filtering_exp = Key(key).eq(value)
-        return table.query(KeyConditionExpression=filtering_exp)
+    filtering_exp = Key(key).eq(value)
+    response = table.query(KeyConditionExpression=filtering_exp)
 
-    raise ValueError('Parameters missing or invalid')
+    items = response.get('Items', [])
+    return items

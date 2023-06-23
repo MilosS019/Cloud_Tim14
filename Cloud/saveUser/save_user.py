@@ -2,51 +2,51 @@ import json
 import boto3
 from utility.utils import create_response
 
-
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('userTable')
 
 
 def save(event, context):
+    body_message = {'message': ''}
+    try:
+        print(event)
+        request_body = json.loads(event['body'])
+        is_request_valid(request_body)
+        is_user_exist(request_body["email"])
+        save_user(request_body)
 
-    body_message = {
-        'message': ''
-    }
+        message = 'Registration successful'
+        return create_response(200, message)
+    except Exception as e:
+        return create_response(400, str(e))
 
-    body = json.loads(event['body'])
 
-    email = body['email'].strip()
-    password = body['password'].strip()
-    name = body['name'].strip()
-    lastname = body['lastname'].strip()
-    birthday = body['birthday'].strip()
+def is_request_valid(body_request):
+    email = body_request["email"]
+    password = body_request["password"]
+    name = body_request["name"]
+    lastname = body_request["lastname"]
+    birthday = body_request["birthday"]
 
-    if not password or not name or not lastname or not email or not birthday:
-        message = 'All fields are required!'
-        body_message['message'] = message
-        return create_response(400, body_message)
+    if not email or not password or not name or not lastname or not birthday:
+        raise Exception("All fields are required!")
 
     if any(not field for field in (password, name, lastname, birthday, email)):
-        message = 'Fields cannot be empty!'
-        body_message['message'] = message
-        return create_response(400, body_message)
+        raise Exception("Fields cannot be empty!")
 
-    existing_user = table.get_item(Key={'username': email})
+
+def is_user_exist(user_email):
+    existing_user = table.get_item(Key={'email': user_email})
     if existing_user.get('Item'):
-        message = 'User already exists!'
-        body_message['message'] = message
-        return create_response(400, body_message)
+        raise Exception("User already exists!")
 
+
+def save_user(request_body):
     response = table.put_item(
         Item={
-            'email': email,
-            'password': password,
-            'name': name,
-            'lastname': lastname,
-            'birthday': birthday,
+            'email': request_body["email"],
+            'password': request_body["password"],
+            'name': request_body["name"],
+            'lastname': request_body["lastname"],
+            'birthday': request_body["birthday"],
         })
-
-
-# return a properly formatted JSON object
-    message = 'Registration successful'
-    return create_response(200, message)

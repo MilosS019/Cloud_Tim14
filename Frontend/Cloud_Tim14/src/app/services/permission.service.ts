@@ -10,10 +10,10 @@ export class PermissionService {
   constructor(private http: HttpClient) {}
 
   public addPermission(permissionObj: any) {
-    permissionObj = {
-      granted_user: 'ivanmartic311@gmail.com',
-      file_path: 'album',
-    };
+    // permissionObj = {
+    //   granted_user: 'ivanmartic311@gmail.com',
+    //   file_path: 'album',
+    // };
     return this.http.post(
       `${environment.baseUrl}file-permission`,
       permissionObj
@@ -21,13 +21,12 @@ export class PermissionService {
   }
 
   public removePermission(permissionObj: any) {
-    permissionObj = {
-      granted_user: 'ivanmartic311@gmail.com',
-      file_path: 'album',
-    };
-    return this.http.delete(
-      `${environment.baseUrl}file-permission`,
-      permissionObj
-    );
+    // permissionObj = {
+    //   granted_user: 'ivanmartic311@gmail.com',
+    //   file_path: 'album',
+    // };
+    return this.http.delete(`${environment.baseUrl}file-permission`, {
+      body: permissionObj,
+    });
   }
 }
