@@ -10,7 +10,7 @@ import { FileUploadComponent } from './components/file-upload/file-upload.compon
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
-import { JwtInterceptor } from './interceptors/jwt.interceptor';
+
 import { FileComponent } from './components/file/file.component';
 import { FilesComponent } from './components/files/files.component';
 import { AlbumComponent } from './components/album/album.component';
@@ -21,6 +21,7 @@ import { EditFileComponent } from './components/edit-file/edit-file.component';
 import { CreateAlbumsComponent } from './components/create-albums/create-albums.component';
 import { FileDetailsComponent } from './components/file-details/file-details.component';
 import { AreYouSureDialogComponent } from './components/are-you-sure-dialog/are-you-sure-dialog.component';
+import { JwtInterceptor } from './interceptors/jwt.interceptor';
 
 @NgModule({
   declarations: [

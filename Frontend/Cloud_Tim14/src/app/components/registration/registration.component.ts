@@ -47,6 +47,18 @@ export class RegistrationComponent {
     this.user.lastname = this.formGroup.value.lastname;
     this.user.birthday = this.formGroup.value.birthday;
 
+    this.userService.fetchUsers().subscribe(
+      (res) => console.log(res),
+      (err) => console.log(err)
+    );
+    this.userService.saveUser(this.user).subscribe(
+      (response) => {},
+      (err) => {
+        console.log(err);
+      }
+    );
+
+    return;
     if (this.formGroup.controls['birthday'].invalid) {
       alert('Invalid date!');
       return;
@@ -72,12 +84,6 @@ export class RegistrationComponent {
     this.cognitoService
       .confirmSignUp(this.user)
       .then(() => {
-        this.userService.saveUser(this.user).subscribe(
-          (response) => {},
-          (err) => {
-            alert(err.error.message);
-          }
-        );
         alert('You have successfully created account!');
         this.goToLoginPage();
       })

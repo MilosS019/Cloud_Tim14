@@ -52,6 +52,26 @@
           "Resource": [
             {
               "Fn::GetAtt": [
+                "FilePermissionsTable",
+                "Arn"
+              ]
+            }
+          ]
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "dynamodb:DescribeTable",
+            "dynamodb:Query",
+            "dynamodb:Scan",
+            "dynamodb:GetItem",
+            "dynamodb:PutItem",
+            "dynamodb:UpdateItem",
+            "dynamodb:DeleteItem"
+          ],
+          "Resource": [
+            {
+              "Fn::GetAtt": [
                 "DynamoDbMetaData",
                 "Arn"
               ]
@@ -202,10 +222,22 @@
               "LogGroupName": "/aws/lambda/cloud-project-dev-uploadFolder"
             }
           },
+          "AddPermissionLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/cloud-project-dev-addPermission"
+            }
+          },
           "RenameFolderLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
               "LogGroupName": "/aws/lambda/cloud-project-dev-renameFolder"
+            }
+          },
+          "RemovePermissionLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/cloud-project-dev-removePermission"
             }
           },
           "IamRoleLambdaExecution": {
@@ -274,6 +306,9 @@
                       },
                       {
                         "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][2]"
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][3]"
                       }
                     ]
                   }
@@ -302,7 +337,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/cloud-project/dev/1687473460994-2023-06-22T22:37:40.994Z/saveUser.zip"
+                "S3Key": "serverless/cloud-project/dev/1687529040373-2023-06-23T14:04:00.373Z/saveUser.zip"
               },
               "Handler": "saveUser/save_user.save",
               "Runtime": "python3.7",
@@ -334,7 +369,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/cloud-project/dev/1687473460994-2023-06-22T22:37:40.994Z/getUsers.zip"
+                "S3Key": "serverless/cloud-project/dev/1687529040373-2023-06-23T14:04:00.373Z/getUsers.zip"
               },
               "Handler": "getUsers/get_users.get_all_users",
               "Runtime": "python3.7",
@@ -366,7 +401,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/cloud-project/dev/1687473460994-2023-06-22T22:37:40.994Z/getFolders.zip"
+                "S3Key": "serverless/cloud-project/dev/1687529040373-2023-06-23T14:04:00.373Z/getFolders.zip"
               },
               "Handler": "getFolders/get_folders.get_all_folders",
               "Runtime": "python3.7",
@@ -398,7 +433,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/cloud-project/dev/1687473460994-2023-06-22T22:37:40.994Z/getFiles.zip"
+                "S3Key": "serverless/cloud-project/dev/1687529040373-2023-06-23T14:04:00.373Z/getFiles.zip"
               },
               "Handler": "getFiles/get_files.get_files",
               "Runtime": "python3.7",
@@ -430,7 +465,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/cloud-project/dev/1687473460994-2023-06-22T22:37:40.994Z/downloadFiles.zip"
+                "S3Key": "serverless/cloud-project/dev/1687529040373-2023-06-23T14:04:00.373Z/downloadFiles.zip"
               },
               "Handler": "fileDownload/download_file.download_file",
               "Runtime": "python3.7",
@@ -462,7 +497,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/cloud-project/dev/1687473460994-2023-06-22T22:37:40.994Z/getMetaData.zip"
+                "S3Key": "serverless/cloud-project/dev/1687529040373-2023-06-23T14:04:00.373Z/getMetaData.zip"
               },
               "Handler": "getMetaData/get_metadata.get_metadata",
               "Runtime": "python3.7",
@@ -494,7 +529,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/cloud-project/dev/1687473460994-2023-06-22T22:37:40.994Z/uploadMetaData.zip"
+                "S3Key": "serverless/cloud-project/dev/1687529040373-2023-06-23T14:04:00.373Z/uploadMetaData.zip"
               },
               "Handler": "metaDataUpload/upload_meta_data.upload_file",
               "Runtime": "python3.7",
@@ -526,7 +561,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/cloud-project/dev/1687473460994-2023-06-22T22:37:40.994Z/uploadFile.zip"
+                "S3Key": "serverless/cloud-project/dev/1687529040373-2023-06-23T14:04:00.373Z/uploadFile.zip"
               },
               "Handler": "fileUpload/upload_file.upload_file",
               "Runtime": "python3.7",
@@ -558,7 +593,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/cloud-project/dev/1687473460994-2023-06-22T22:37:40.994Z/uploadFolder.zip"
+                "S3Key": "serverless/cloud-project/dev/1687529040373-2023-06-23T14:04:00.373Z/uploadFolder.zip"
               },
               "Handler": "uploadFolder/upload_folder.upload_folder",
               "Runtime": "python3.7",
@@ -583,6 +618,38 @@
               "UploadFolderLogGroup"
             ]
           },
+          "AddPermissionLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/cloud-project/dev/1687529040373-2023-06-23T14:04:00.373Z/addPermission.zip"
+              },
+              "Handler": "addViewPermission/add_view_permission.add_permission",
+              "Runtime": "python3.7",
+              "FunctionName": "cloud-project-dev-addPermission",
+              "MemorySize": 128,
+              "Timeout": 10,
+              "Environment": {
+                "Variables": {
+                  "USER_TABLE": {
+                    "$ref": "$[\"service\"][\"provider\"][\"environment\"][\"USER_TABLE\"]"
+                  }
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "AddPermissionLogGroup"
+            ]
+          },
           "RenameFolderLambdaFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
@@ -590,7 +657,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/cloud-project/dev/1687473460994-2023-06-22T22:37:40.994Z/renameFolder.zip"
+                "S3Key": "serverless/cloud-project/dev/1687529040373-2023-06-23T14:04:00.373Z/renameFolder.zip"
               },
               "Handler": "renameFolder/rename_folder.rename_folder",
               "Runtime": "python3.7",
@@ -615,104 +682,156 @@
               "RenameFolderLogGroup"
             ]
           },
-          "GetUsersLambdaVersionfvVlL9lBqdDpOCvVHcyLoMImlxTr5UCB89VIdushnA": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
+          "RemovePermissionLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
             "Properties": {
-              "FunctionName": {
-                "Ref": "GetUsersLambdaFunction"
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/cloud-project/dev/1687529040373-2023-06-23T14:04:00.373Z/removePermission.zip"
               },
-              "CodeSha256": "ZyLGVm9i5DgVNWrWPEnucCOFcVSzoFnIIsLODMr4IPQ="
-            }
+              "Handler": "removeViewPermission/remove_view_permission.remove_permission",
+              "Runtime": "python3.7",
+              "FunctionName": "cloud-project-dev-removePermission",
+              "MemorySize": 128,
+              "Timeout": 10,
+              "Environment": {
+                "Variables": {
+                  "USER_TABLE": {
+                    "$ref": "$[\"service\"][\"provider\"][\"environment\"][\"USER_TABLE\"]"
+                  }
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "RemovePermissionLogGroup"
+            ]
           },
-          "SaveUserLambdaVersionJUFuhSkY1BPaacA8teY2KclZd9EURPsmHIC8EL65xE": {
+          "SaveUserLambdaVersionUjE4Pxntmv39sWegO8XcjVHq9HGCzE5lehPxDQLHcQ": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "SaveUserLambdaFunction"
               },
-              "CodeSha256": "yU4TWniFLPu+3yhJ+aajHkXmqfEGQrYL4is0M/4Z8OY="
+              "CodeSha256": "gcPAaLkO2me5OTHuc6s/cun0lhLqci9r20JCta7xK3I="
             }
           },
-          "DownloadFilesLambdaVersion2Zav1YXrSJucafvS7WePsk7t3OEBVFuINP5AXOaBrU": {
+          "GetUsersLambdaVersionU4QvGuICMezDGIafLv7YVLR5pUgDmkeGBiO9MFIjTkA": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetUsersLambdaFunction"
+              },
+              "CodeSha256": "wBkWF5igTFzXA/KZoCThj0vEjF7ubo29j1XTktV4Hsw="
+            }
+          },
+          "DownloadFilesLambdaVersionNXuLwn1YLzSRNRMrVKYGM8XzIKjNLYovfO9tuWugLQ": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "DownloadFilesLambdaFunction"
               },
-              "CodeSha256": "PcxH0PE0GcMUe03P7VaNGFAOQCUBITPW0PdlvnLGnbc="
+              "CodeSha256": "SsheMWmObGoI3UwTU1SqVQwF6ELHmWeYJfw/gvUar0I="
             }
           },
-          "GetFilesLambdaVersionDuIzeSXVGaLRj5Q8e7FR0BOcAzdV7pWziAmd6Off8": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
-            "Properties": {
-              "FunctionName": {
-                "Ref": "GetFilesLambdaFunction"
-              },
-              "CodeSha256": "Z5oxUgVkyl7VGZDQoG9U+he/Np4U1KH5cTk6JV0ESoQ="
-            }
-          },
-          "GetMetaDataLambdaVersiongJWA1GT57yOV0uUCxC9hbkNMvbhTVZiFsDOVRGpCvgU": {
+          "GetMetaDataLambdaVersionRjVimf4rp0a2cg9ae9etyOizuUbcDPabR0A7XBnXY": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetMetaDataLambdaFunction"
               },
-              "CodeSha256": "omefAyFmq7wTBQ6xpoj3V2cjgfjvXdu7AFLENbeSXww="
+              "CodeSha256": "4RLoPkoEONAEBQq4WuVl64blPZhW0gtqe9if56U9A7s="
             }
           },
-          "UploadMetaDataLambdaVersionG2a78tEGMPgAoc4NFWUM79y5msoQw9jwmHDaAclBI": {
+          "UploadMetaDataLambdaVersionnchbkm8kJ5v8yRRU0KhZAURKxUqLuy2dWt6vKO1G4": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "UploadMetaDataLambdaFunction"
               },
-              "CodeSha256": "x5OTnL32Hxi2+Kww2ASayIZfBUpZBn3kJiQiAdGJO94="
+              "CodeSha256": "CKy9hvCt4pDCLldW2dVQ4QvJCnvYG0e8Zh1mpODNxak="
             }
           },
-          "UploadFolderLambdaVersionbunU8S0RhEKfVpKR1RqhvrFcmwyqINeLKGc6YxQPSA0": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
-            "Properties": {
-              "FunctionName": {
-                "Ref": "UploadFolderLambdaFunction"
-              },
-              "CodeSha256": "StG1VaCfc3cNOLusaWIDu8PYBbIkKu9twosvQNX0nzw="
-            }
-          },
-          "RenameFolderLambdaVersionkhmSZm5I60B3MXfXp6sTQGV9Hdkyt8twosOhyB3E7w": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
-            "Properties": {
-              "FunctionName": {
-                "Ref": "RenameFolderLambdaFunction"
-              },
-              "CodeSha256": "3pOQtLNyFEmBST6gh9VEXbZ84RgyypLqvqikbGDkCS4="
-            }
-          },
-          "UploadFileLambdaVersionPlkNqSknbH8CsnC48WjyIMoghAS5eRcpp9aBnXPv0c": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
-            "Properties": {
-              "FunctionName": {
-                "Ref": "UploadFileLambdaFunction"
-              },
-              "CodeSha256": "mHOuLuFu8vhIGRRdx9/zyGxMDgTQFszVdDh7vgSRsrI="
-            }
-          },
-          "GetFoldersLambdaVersionkJn30jvD8BDvUrGxJe69gCzq2BKVm7mAFMWwkpWbo24": {
+          "GetFoldersLambdaVersionCplGVRGg0Rko00r5yzdexaUYQWUzuNigsf4Orld8Ic": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetFoldersLambdaFunction"
               },
-              "CodeSha256": "Uw9MwVifxdx2ZsKtmnnjhAsU1HildPnnbMn0Zx50v+Q="
+              "CodeSha256": "/i40tH8/6Lcy5nAwE+qzsso8SVxMrTnUyc1/RtpfHHg="
+            }
+          },
+          "UploadFolderLambdaVersionHhMPiVPzmZEvnUgWBlq0U1f8wB9poXlAhMNk5VKg": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UploadFolderLambdaFunction"
+              },
+              "CodeSha256": "6eb1JwlxVvAPTQSdtWbNxgMdyDFJSFKO5tjqAbiDRyc="
+            }
+          },
+          "UploadFileLambdaVersionG7vznKzBPMK5RO7buTn3aczFTERjsybJMI7fCVeA": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UploadFileLambdaFunction"
+              },
+              "CodeSha256": "c7Z7wLKS8v18K4WaEdTJNVNiOYrx64G3xHFCKCMpz3M="
+            }
+          },
+          "GetFilesLambdaVersionI3gjpC4gkt08AwmBwNgS6wkmNOi6KpznA3MWKJJfNng": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetFilesLambdaFunction"
+              },
+              "CodeSha256": "hQofOIUmnjGbgljgyY/lKbl/PX6a8yVWrTacHIU/gxI="
+            }
+          },
+          "RenameFolderLambdaVersionlfgtAXsZFo9sRyqwaTgnc4rW4PWkdNqWSHbMLP7if8": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "RenameFolderLambdaFunction"
+              },
+              "CodeSha256": "/Zwyij+gQiMJ2SG+NHyw6MTZcnN++vUpK+6z5t9Cxtg="
+            }
+          },
+          "AddPermissionLambdaVersion6I69e4KDIeqUtZoqkUHantLjgMPwe17KGSqHBejVxQ": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "AddPermissionLambdaFunction"
+              },
+              "CodeSha256": "o9UHMLZ/xRl+WXb7NVoBjuvgG3LfSq4uhMm/kJE1RrE="
+            }
+          },
+          "RemovePermissionLambdaVersionxKY3VtkvihWyu8cZyt9VIzpbEqqNGk2NwEjfrET708A": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "RemovePermissionLambdaFunction"
+              },
+              "CodeSha256": "anAHFJ4PI4XTAy+PsnkCKygHRoil3JsWzAArCWI50X0="
             }
           },
           "ApiGatewayRestApi": {
@@ -842,6 +961,21 @@
                 ]
               },
               "PathPart": "upload-folder",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceFileDashpermission": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "file-permission",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
@@ -1222,6 +1356,51 @@
               }
             }
           },
+          "ApiGatewayMethodFileDashpermissionOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,DELETE,POST'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceFileDashpermission"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
           "ApiGatewayMethodRenameDashfolderOptions": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
@@ -1325,10 +1504,7 @@
                 "Ref": "ApiGatewayRestApi"
               },
               "ApiKeyRequired": false,
-              "AuthorizationType": "COGNITO_USER_POOLS",
-              "AuthorizerId": {
-                "Ref": "MyApiGatewayAuthorizer"
-              },
+              "AuthorizationType": "NONE",
               "Integration": {
                 "IntegrationHttpMethod": "POST",
                 "Type": "AWS_PROXY",
@@ -1705,6 +1881,55 @@
               "UploadFolderLambdaPermissionApiGateway"
             ]
           },
+          "ApiGatewayMethodFileDashpermissionPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceFileDashpermission"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "COGNITO_USER_POOLS",
+              "AuthorizerId": {
+                "Ref": "MyApiGatewayAuthorizer"
+              },
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "AddPermissionLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "AddPermissionLambdaPermissionApiGateway"
+            ]
+          },
           "ApiGatewayMethodRenameDashfolderPost": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
@@ -1754,7 +1979,56 @@
               "RenameFolderLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1687473459928": {
+          "ApiGatewayMethodFileDashpermissionDelete": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "DELETE",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceFileDashpermission"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "COGNITO_USER_POOLS",
+              "AuthorizerId": {
+                "Ref": "MyApiGatewayAuthorizer"
+              },
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "RemovePermissionLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "RemovePermissionLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayDeployment1687529038363": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -1771,6 +2045,7 @@
               "ApiGatewayMethodUploadDashmetadataOptions",
               "ApiGatewayMethodUploadDashfileOptions",
               "ApiGatewayMethodUploadDashfolderOptions",
+              "ApiGatewayMethodFileDashpermissionOptions",
               "ApiGatewayMethodRenameDashfolderOptions",
               "ApiGatewayMethodUsersPost",
               "ApiGatewayMethodUsersGet",
@@ -1781,7 +2056,9 @@
               "ApiGatewayMethodUploadDashmetadataPost",
               "ApiGatewayMethodUploadDashfilePost",
               "ApiGatewayMethodUploadDashfolderPost",
-              "ApiGatewayMethodRenameDashfolderPost"
+              "ApiGatewayMethodFileDashpermissionPost",
+              "ApiGatewayMethodRenameDashfolderPost",
+              "ApiGatewayMethodFileDashpermissionDelete"
             ]
           },
           "SaveUserLambdaPermissionApiGateway": {
@@ -2117,12 +2394,86 @@
               }
             }
           },
+          "AddPermissionLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "AddPermissionLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
           "RenameFolderLambdaPermissionApiGateway": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
               "FunctionName": {
                 "Fn::GetAtt": [
                   "RenameFolderLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "RemovePermissionLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "RemovePermissionLambdaFunction",
                   "Arn"
                 ]
               },
@@ -2168,6 +2519,36 @@
                 {
                   "AttributeName": "email",
                   "KeyType": "HASH"
+                }
+              ],
+              "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+              }
+            }
+          },
+          "FilePermissionsTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "file-permissions",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "granted_user",
+                  "AttributeType": "S"
+                },
+                {
+                  "AttributeName": "file_path",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "granted_user",
+                  "KeyType": "HASH"
+                },
+                {
+                  "AttributeName": "file_path",
+                  "KeyType": "RANGE"
                 }
               ],
               "ProvisionedThroughput": {
@@ -2297,46 +2678,37 @@
               "Name": "sls-cloud-project-dev-ServerlessDeploymentBucketName"
             }
           },
-          "GetUsersLambdaFunctionQualifiedArn": {
-            "Description": "Current Lambda function version",
-            "Value": {
-              "Ref": "GetUsersLambdaVersionfvVlL9lBqdDpOCvVHcyLoMImlxTr5UCB89VIdushnA"
-            },
-            "Export": {
-              "Name": "sls-cloud-project-dev-GetUsersLambdaFunctionQualifiedArn"
-            }
-          },
           "SaveUserLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "SaveUserLambdaVersionJUFuhSkY1BPaacA8teY2KclZd9EURPsmHIC8EL65xE"
+              "Ref": "SaveUserLambdaVersionUjE4Pxntmv39sWegO8XcjVHq9HGCzE5lehPxDQLHcQ"
             },
             "Export": {
               "Name": "sls-cloud-project-dev-SaveUserLambdaFunctionQualifiedArn"
             }
           },
+          "GetUsersLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetUsersLambdaVersionU4QvGuICMezDGIafLv7YVLR5pUgDmkeGBiO9MFIjTkA"
+            },
+            "Export": {
+              "Name": "sls-cloud-project-dev-GetUsersLambdaFunctionQualifiedArn"
+            }
+          },
           "DownloadFilesLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "DownloadFilesLambdaVersion2Zav1YXrSJucafvS7WePsk7t3OEBVFuINP5AXOaBrU"
+              "Ref": "DownloadFilesLambdaVersionNXuLwn1YLzSRNRMrVKYGM8XzIKjNLYovfO9tuWugLQ"
             },
             "Export": {
               "Name": "sls-cloud-project-dev-DownloadFilesLambdaFunctionQualifiedArn"
             }
           },
-          "GetFilesLambdaFunctionQualifiedArn": {
-            "Description": "Current Lambda function version",
-            "Value": {
-              "Ref": "GetFilesLambdaVersionDuIzeSXVGaLRj5Q8e7FR0BOcAzdV7pWziAmd6Off8"
-            },
-            "Export": {
-              "Name": "sls-cloud-project-dev-GetFilesLambdaFunctionQualifiedArn"
-            }
-          },
           "GetMetaDataLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetMetaDataLambdaVersiongJWA1GT57yOV0uUCxC9hbkNMvbhTVZiFsDOVRGpCvgU"
+              "Ref": "GetMetaDataLambdaVersionRjVimf4rp0a2cg9ae9etyOizuUbcDPabR0A7XBnXY"
             },
             "Export": {
               "Name": "sls-cloud-project-dev-GetMetaDataLambdaFunctionQualifiedArn"
@@ -2345,46 +2717,73 @@
           "UploadMetaDataLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UploadMetaDataLambdaVersionG2a78tEGMPgAoc4NFWUM79y5msoQw9jwmHDaAclBI"
+              "Ref": "UploadMetaDataLambdaVersionnchbkm8kJ5v8yRRU0KhZAURKxUqLuy2dWt6vKO1G4"
             },
             "Export": {
               "Name": "sls-cloud-project-dev-UploadMetaDataLambdaFunctionQualifiedArn"
             }
           },
+          "GetFoldersLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetFoldersLambdaVersionCplGVRGg0Rko00r5yzdexaUYQWUzuNigsf4Orld8Ic"
+            },
+            "Export": {
+              "Name": "sls-cloud-project-dev-GetFoldersLambdaFunctionQualifiedArn"
+            }
+          },
           "UploadFolderLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UploadFolderLambdaVersionbunU8S0RhEKfVpKR1RqhvrFcmwyqINeLKGc6YxQPSA0"
+              "Ref": "UploadFolderLambdaVersionHhMPiVPzmZEvnUgWBlq0U1f8wB9poXlAhMNk5VKg"
             },
             "Export": {
               "Name": "sls-cloud-project-dev-UploadFolderLambdaFunctionQualifiedArn"
             }
           },
-          "RenameFolderLambdaFunctionQualifiedArn": {
-            "Description": "Current Lambda function version",
-            "Value": {
-              "Ref": "RenameFolderLambdaVersionkhmSZm5I60B3MXfXp6sTQGV9Hdkyt8twosOhyB3E7w"
-            },
-            "Export": {
-              "Name": "sls-cloud-project-dev-RenameFolderLambdaFunctionQualifiedArn"
-            }
-          },
           "UploadFileLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UploadFileLambdaVersionPlkNqSknbH8CsnC48WjyIMoghAS5eRcpp9aBnXPv0c"
+              "Ref": "UploadFileLambdaVersionG7vznKzBPMK5RO7buTn3aczFTERjsybJMI7fCVeA"
             },
             "Export": {
               "Name": "sls-cloud-project-dev-UploadFileLambdaFunctionQualifiedArn"
             }
           },
-          "GetFoldersLambdaFunctionQualifiedArn": {
+          "GetFilesLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetFoldersLambdaVersionkJn30jvD8BDvUrGxJe69gCzq2BKVm7mAFMWwkpWbo24"
+              "Ref": "GetFilesLambdaVersionI3gjpC4gkt08AwmBwNgS6wkmNOi6KpznA3MWKJJfNng"
             },
             "Export": {
-              "Name": "sls-cloud-project-dev-GetFoldersLambdaFunctionQualifiedArn"
+              "Name": "sls-cloud-project-dev-GetFilesLambdaFunctionQualifiedArn"
+            }
+          },
+          "RenameFolderLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "RenameFolderLambdaVersionlfgtAXsZFo9sRyqwaTgnc4rW4PWkdNqWSHbMLP7if8"
+            },
+            "Export": {
+              "Name": "sls-cloud-project-dev-RenameFolderLambdaFunctionQualifiedArn"
+            }
+          },
+          "AddPermissionLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "AddPermissionLambdaVersion6I69e4KDIeqUtZoqkUHantLjgMPwe17KGSqHBejVxQ"
+            },
+            "Export": {
+              "Name": "sls-cloud-project-dev-AddPermissionLambdaFunctionQualifiedArn"
+            }
+          },
+          "RemovePermissionLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "RemovePermissionLambdaVersionxKY3VtkvihWyu8cZyt9VIzpbEqqNGk2NwEjfrET708A"
+            },
+            "Export": {
+              "Name": "sls-cloud-project-dev-RemovePermissionLambdaFunctionQualifiedArn"
             }
           },
           "ServiceEndpoint": {
@@ -2540,7 +2939,7 @@
         "timeout": 10,
         "runtime": "python3.7",
         "vpc": {},
-        "versionLogicalId": "SaveUserLambdaVersionJUFuhSkY1BPaacA8teY2KclZd9EURPsmHIC8EL65xE"
+        "versionLogicalId": "SaveUserLambdaVersionUjE4Pxntmv39sWegO8XcjVHq9HGCzE5lehPxDQLHcQ"
       },
       "getUsers": {
         "handler": "getUsers/get_users.get_all_users",
@@ -2572,16 +2971,6 @@
                 ],
                 "allowCredentials": false
               },
-              "authorizer": {
-                "type": "COGNITO_USER_POOLS",
-                "managedExternally": false,
-                "authorizerId": {
-                  "Ref": "MyApiGatewayAuthorizer"
-                },
-                "resultTtlInSeconds": 300,
-                "identitySource": "method.request.header.Authorization",
-                "claims": []
-              },
               "integration": "AWS_PROXY"
             }
           }
@@ -2591,7 +2980,7 @@
         "timeout": 10,
         "runtime": "python3.7",
         "vpc": {},
-        "versionLogicalId": "GetUsersLambdaVersionfvVlL9lBqdDpOCvVHcyLoMImlxTr5UCB89VIdushnA"
+        "versionLogicalId": "GetUsersLambdaVersionU4QvGuICMezDGIafLv7YVLR5pUgDmkeGBiO9MFIjTkA"
       },
       "getFolders": {
         "handler": "getFolders/get_folders.get_all_folders",
@@ -2642,7 +3031,7 @@
         "timeout": 10,
         "runtime": "python3.7",
         "vpc": {},
-        "versionLogicalId": "GetFoldersLambdaVersionkJn30jvD8BDvUrGxJe69gCzq2BKVm7mAFMWwkpWbo24"
+        "versionLogicalId": "GetFoldersLambdaVersionCplGVRGg0Rko00r5yzdexaUYQWUzuNigsf4Orld8Ic"
       },
       "getFiles": {
         "handler": "getFiles/get_files.get_files",
@@ -2693,7 +3082,7 @@
         "timeout": 10,
         "runtime": "python3.7",
         "vpc": {},
-        "versionLogicalId": "GetFilesLambdaVersionDuIzeSXVGaLRj5Q8e7FR0BOcAzdV7pWziAmd6Off8"
+        "versionLogicalId": "GetFilesLambdaVersionI3gjpC4gkt08AwmBwNgS6wkmNOi6KpznA3MWKJJfNng"
       },
       "downloadFiles": {
         "handler": "fileDownload/download_file.download_file",
@@ -2744,7 +3133,7 @@
         "timeout": 10,
         "runtime": "python3.7",
         "vpc": {},
-        "versionLogicalId": "DownloadFilesLambdaVersion2Zav1YXrSJucafvS7WePsk7t3OEBVFuINP5AXOaBrU"
+        "versionLogicalId": "DownloadFilesLambdaVersionNXuLwn1YLzSRNRMrVKYGM8XzIKjNLYovfO9tuWugLQ"
       },
       "getMetaData": {
         "handler": "getMetaData/get_metadata.get_metadata",
@@ -2795,7 +3184,7 @@
         "timeout": 10,
         "runtime": "python3.7",
         "vpc": {},
-        "versionLogicalId": "GetMetaDataLambdaVersiongJWA1GT57yOV0uUCxC9hbkNMvbhTVZiFsDOVRGpCvgU"
+        "versionLogicalId": "GetMetaDataLambdaVersionRjVimf4rp0a2cg9ae9etyOizuUbcDPabR0A7XBnXY"
       },
       "uploadMetaData": {
         "handler": "metaDataUpload/upload_meta_data.upload_file",
@@ -2846,7 +3235,7 @@
         "timeout": 10,
         "runtime": "python3.7",
         "vpc": {},
-        "versionLogicalId": "UploadMetaDataLambdaVersionG2a78tEGMPgAoc4NFWUM79y5msoQw9jwmHDaAclBI"
+        "versionLogicalId": "UploadMetaDataLambdaVersionnchbkm8kJ5v8yRRU0KhZAURKxUqLuy2dWt6vKO1G4"
       },
       "uploadFile": {
         "handler": "fileUpload/upload_file.upload_file",
@@ -2897,7 +3286,7 @@
         "timeout": 10,
         "runtime": "python3.7",
         "vpc": {},
-        "versionLogicalId": "UploadFileLambdaVersionPlkNqSknbH8CsnC48WjyIMoghAS5eRcpp9aBnXPv0c"
+        "versionLogicalId": "UploadFileLambdaVersionG7vznKzBPMK5RO7buTn3aczFTERjsybJMI7fCVeA"
       },
       "uploadFolder": {
         "handler": "uploadFolder/upload_folder.upload_folder",
@@ -2948,7 +3337,58 @@
         "timeout": 10,
         "runtime": "python3.7",
         "vpc": {},
-        "versionLogicalId": "UploadFolderLambdaVersionbunU8S0RhEKfVpKR1RqhvrFcmwyqINeLKGc6YxQPSA0"
+        "versionLogicalId": "UploadFolderLambdaVersionHhMPiVPzmZEvnUgWBlq0U1f8wB9poXlAhMNk5VKg"
+      },
+      "addPermission": {
+        "handler": "addViewPermission/add_view_permission.add_permission",
+        "package": {
+          "include": [
+            "addViewPermission/**"
+          ],
+          "artifact": "C:\\fakultet\\TrecaGodina\\Racunarstvo u oblaku\\Projekatv2\\Cloud_Tim14\\Cloud\\.serverless\\addPermission.zip"
+        },
+        "events": [
+          {
+            "http": {
+              "path": "file-permission",
+              "method": "post",
+              "cors": {
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "POST"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent",
+                  "X-Amzn-Trace-Id"
+                ],
+                "allowCredentials": false
+              },
+              "authorizer": {
+                "type": "COGNITO_USER_POOLS",
+                "managedExternally": false,
+                "authorizerId": {
+                  "Ref": "MyApiGatewayAuthorizer"
+                },
+                "resultTtlInSeconds": 300,
+                "identitySource": "method.request.header.Authorization",
+                "claims": []
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "cloud-project-dev-addPermission",
+        "memory": 128,
+        "timeout": 10,
+        "runtime": "python3.7",
+        "vpc": {},
+        "versionLogicalId": "AddPermissionLambdaVersion6I69e4KDIeqUtZoqkUHantLjgMPwe17KGSqHBejVxQ"
       },
       "renameFolder": {
         "handler": "renameFolder/rename_folder.rename_folder",
@@ -2999,7 +3439,58 @@
         "timeout": 10,
         "runtime": "python3.7",
         "vpc": {},
-        "versionLogicalId": "RenameFolderLambdaVersionkhmSZm5I60B3MXfXp6sTQGV9Hdkyt8twosOhyB3E7w"
+        "versionLogicalId": "RenameFolderLambdaVersionlfgtAXsZFo9sRyqwaTgnc4rW4PWkdNqWSHbMLP7if8"
+      },
+      "removePermission": {
+        "handler": "removeViewPermission/remove_view_permission.remove_permission",
+        "package": {
+          "include": [
+            "removeViewPermission/**"
+          ],
+          "artifact": "C:\\fakultet\\TrecaGodina\\Racunarstvo u oblaku\\Projekatv2\\Cloud_Tim14\\Cloud\\.serverless\\removePermission.zip"
+        },
+        "events": [
+          {
+            "http": {
+              "path": "file-permission",
+              "method": "delete",
+              "cors": {
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "DELETE"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent",
+                  "X-Amzn-Trace-Id"
+                ],
+                "allowCredentials": false
+              },
+              "authorizer": {
+                "type": "COGNITO_USER_POOLS",
+                "managedExternally": false,
+                "authorizerId": {
+                  "Ref": "MyApiGatewayAuthorizer"
+                },
+                "resultTtlInSeconds": 300,
+                "identitySource": "method.request.header.Authorization",
+                "claims": []
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "cloud-project-dev-removePermission",
+        "memory": 128,
+        "timeout": 10,
+        "runtime": "python3.7",
+        "vpc": {},
+        "versionLogicalId": "RemovePermissionLambdaVersionxKY3VtkvihWyu8cZyt9VIzpbEqqNGk2NwEjfrET708A"
       }
     },
     "resources": {
@@ -3018,6 +3509,36 @@
               {
                 "AttributeName": "email",
                 "KeyType": "HASH"
+              }
+            ],
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            }
+          }
+        },
+        "FilePermissionsTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "file-permissions",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "granted_user",
+                "AttributeType": "S"
+              },
+              {
+                "AttributeName": "file_path",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "granted_user",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "file_path",
+                "KeyType": "RANGE"
               }
             ],
             "ProvisionedThroughput": {
@@ -3155,7 +3676,7 @@
           "utility/**"
         ],
         "artifactsS3KeyDirname": "serverless/cloud-project/dev/code-artifacts",
-        "artifactDirectoryName": "serverless/cloud-project/dev/1687473460994-2023-06-22T22:37:40.994Z"
+        "artifactDirectoryName": "serverless/cloud-project/dev/1687529040373-2023-06-23T14:04:00.373Z"
       },
       "functions": {
         "$ref": "$[\"service\"][\"functions\"]"
@@ -3169,7 +3690,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/cloud-project/dev/1687473460994-2023-06-22T22:37:40.994Z",
+    "artifactDirectoryName": "serverless/cloud-project/dev/1687529040373-2023-06-23T14:04:00.373Z",
     "artifact": ""
   }
 }
