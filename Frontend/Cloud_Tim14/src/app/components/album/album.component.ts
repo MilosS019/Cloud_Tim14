@@ -10,8 +10,13 @@ import { Router } from '@angular/router';
 })
 export class AlbumComponent {
   @Output() albumOpening :EventEmitter<string> = new EventEmitter();
+  @Output() renamed: EventEmitter<[string,string]> = new EventEmitter();
+
   isShareFormDisplayed: boolean = false;
   isRemoveSharingFormDisplayed: boolean = false;
+  areYouSureDialog:boolean = false;
+
+  callbackFunction:any;
 
   shareFormGroup: FormGroup = new FormGroup({
     email: new FormControl(''),
@@ -51,4 +56,28 @@ export class AlbumComponent {
   openAlbum(): void {
     this.albumOpening.emit(this.album.name)
   }
+  
+  rename(input:any){
+    input.disabled = false;
+  }
+  
+  startSaving(){
+    this.areYouSureDialog = true;
+    this.callbackFunction = this.save
+  }
+  
+  save(input:any){
+    this.disableInput(input)
+    this.areYouSureDialog = false;
+    this.renamed.emit([this.album.name, input.value])
+  }
+  
+  disableInput(input:any){
+    input.disabled = true;
+  }
+  
+  closeAreYouSureDialog(){
+    this.areYouSureDialog = false;
+  }
+
 }

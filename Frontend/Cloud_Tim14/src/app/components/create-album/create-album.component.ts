@@ -25,7 +25,7 @@ export class CreateAlbumComponent {
   
       const jsonData = JSON.stringify(payload);
     
-      this.fileService.uploadFile(jsonData).subscribe(
+      this.fileService.uploadFolder(jsonData).subscribe(
         data => {
           console.log(data);
           this.close.emit(this.formGroup.get("albumName")?.value)

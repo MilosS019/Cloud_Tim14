@@ -1,15 +1,21 @@
 <div>
-  <div (click)="openAlbum()" class="album-card">
-    <div class="album-count">Number of files: {{ album.numberOfFiles }}</div>
+  <div class="album-card">
+    
+    <div class="album-count" (click)="openAlbum()">Number of files: {{ album.numberOfFiles }}</div>
     <div class="album-details">
-      <h3 class="album-title">{{ album.name }}</h3>
+      <input (keyup.enter)="startSaving()" name = "name" id = "name" #name class="album-title" value="{{ album.name }}" disabled>
     </div>
   </div>
   <div class="file-actions">
     <i (click)="openShareAlbumForm()" class="fas fa-share"></i>
     <i (click)="openRemoveSharingAlbumForm()" class="fas fa-unlink"></i>
+    <i (click)="rename(name)" class = "fas fa-edit"></i>
     <i (click)="deleteAlbum()" class="fas fa-trash"></i>
   </div>
+</div>
+
+<div *ngIf = "areYouSureDialog">
+  <app-are-you-sure-dialog (no)="closeAreYouSureDialog()" (yes)="callbackFunction(name)"></app-are-you-sure-dialog>
 </div>
 
 <div *ngIf="isShareFormDisplayed" style="margin-bottom: 10px">

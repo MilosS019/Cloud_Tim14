@@ -98,3 +98,15 @@ p{
   height: 60px;
   width: 60px;
 }
+
+.close{
+  position: fixed;
+  top: 50px;
+  right: 10px;
+}
+
+.close img{
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+}

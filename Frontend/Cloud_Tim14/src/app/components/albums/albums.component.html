@@ -1,7 +1,7 @@
 <h1>Albums</h1>
 <div class="albums-container">
   <div *ngFor="let album of albums">
-    <app-album (albumOpening)="changeFolder($event)" [album]="album"></app-album>
+    <app-album (renamed)="rename($event)" (albumOpening)="changeFolder($event)" [album]="album"></app-album>
   </div>
 </div>
 <div id = "add-albums">
@@ -14,12 +14,17 @@
 
 <h1>Files</h1>
 <div *ngFor="let file of files" (click) = "openDescription(file)" class = "files"> 
-  <div class="file">
+  <div class="file"  *ngIf="file[1] == 'txt' || file[1] == 'png' || file[1] == 'jpg'">
     <img src = "../../../assets/images/txt.png" *ngIf="file[1] == 'txt'" class="txt">
     
     <img src = "../../../assets/images/img.png" *ngIf="file[1] == 'jpg'" class="img">
     
     <img src = "../../../assets/images/img.png" *ngIf="file[1] == 'png'" class="img">
+    <p>{{file[0]}}</p>
+  </div>
+
+  <div class="file" *ngIf="file[1] != 'txt' && file[1] != 'png' && file[1] != 'jpg'">
+    <img src = "../../../assets/images/file.png" class="img">
     <p>{{file[0]}}</p>
   </div>
 </div>
@@ -33,6 +38,11 @@
     <app-file-upload (closing)="closeFileUploadDialog($event)" [path]="currentpath"></app-file-upload>
   </div>
 </div>
+
+<div class="close" *ngIf="showUploadFileDialog" (click) = "close()">
+  <img src="../../../assets/images/close.png" alt="close">
+</div>
+
 
 <div id="footer"></div>
 

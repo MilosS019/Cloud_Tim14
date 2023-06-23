@@ -11,6 +11,15 @@ export class FileService {
   
   constructor(private http: HttpClient) { 
   }
+
+  public uploadFolder (fileObj:any): Observable<any> {
+    return this.http.post(`${environment.baseUrl}upload-folder`, fileObj);
+  }
+
+  
+  public renameFolder (folderNames:any): Observable<any> {
+    return this.http.post(`${environment.baseUrl}rename-folder`, folderNames);
+  }
   
   public uploadFile (fileObj:any): Observable<any> {
     return this.http.post(`${environment.baseUrl}upload-file`, fileObj);

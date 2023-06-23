@@ -20,6 +20,7 @@ import { FileEditComponent } from './components/file-edit/file-edit.component';
 import { EditFileComponent } from './components/edit-file/edit-file.component';
 import { CreateAlbumsComponent } from './components/create-albums/create-albums.component';
 import { FileDetailsComponent } from './components/file-details/file-details.component';
+import { AreYouSureDialogComponent } from './components/are-you-sure-dialog/are-you-sure-dialog.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { FileDetailsComponent } from './components/file-details/file-details.com
     EditFileComponent,
     CreateAlbumsComponent,
     FileDetailsComponent,
+    AreYouSureDialogComponent,
   ],
   imports: [
     BrowserModule,

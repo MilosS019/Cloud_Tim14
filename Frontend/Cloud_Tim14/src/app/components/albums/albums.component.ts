@@ -33,7 +33,6 @@ export class AlbumsComponent implements OnInit{
           this.allFolders = data["folders"]
           this.foldersSize = data["folders_size"]
           this.pathHistory.push(rootFolder)
-          console.log(data)
           for(let folder of data["folders"][rootFolder]){
             let album: PhotoAlbum = { name: folder, numberOfFiles: data["folders_size"][folder] };
             this.albums.push(album);
@@ -46,7 +45,6 @@ export class AlbumsComponent implements OnInit{
             pair.push(file_name.split(".")[1])
             this.files.push(pair) 
           }
-          console.log(this.files)
         },
         error(data) {
 
@@ -70,7 +68,6 @@ export class AlbumsComponent implements OnInit{
   openDescription(file:any){
     this.fileService.getMetaData(this.currentpath + file[0]).subscribe({
       next: data => {
-        console.log(data)
         let fileInfo: MyFile = {
           name: file[0],
           size: data.Item.size,
@@ -95,7 +92,6 @@ export class AlbumsComponent implements OnInit{
 
   closeFileUploadDialog(fileName:string){
     this.files.push([fileName, fileName.split(".")[1]])
-    console.log(this.files)
     this.showUploadFileDialog = false;
   }
 
@@ -148,7 +144,6 @@ export class AlbumsComponent implements OnInit{
   }
 
   handleFileDownload(response: any, filename:string): void {
-    console.log(response)
     let extension = filename.split(".")[1]
     const file = this.decodeFile(response, extension)
     const fileUrl = URL.createObjectURL(file);
@@ -186,13 +181,31 @@ export class AlbumsComponent implements OnInit{
   }
 
   download(fileName:string){
-    console.log(this.currentpath + fileName)
     this.fileService.downloadFiles(this.currentpath + fileName).subscribe({
       next: data => {
         this.handleFileDownload(data, fileName)
       },
       error: data => {
 
+      }
+    })
+  }
+
+  close(){
+    this.showUploadFileDialog = false;
+  }
+
+  rename(oldAndNewFolderName:any){
+    let old_path = this.currentpath + oldAndNewFolderName[0] + "/";
+    let new_path = this.currentpath + oldAndNewFolderName[1] + "/";
+    console.log(old_path)
+    console.log(new_path)
+    this.fileService.renameFolder({"oldPath":old_path, "newPath": new_path}).subscribe({
+      next: data => {
+        console.log(data)
+      },
+      error: data => {
+        console.log(data)
       }
     })
   }
