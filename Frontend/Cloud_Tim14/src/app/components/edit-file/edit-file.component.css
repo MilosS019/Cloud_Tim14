@@ -58,3 +58,12 @@ button {
   cursor: pointer;
   font-size: 16px;
 }
+
+#close-edit-file{
+  height: 50px;
+  width: 50px;
+  float: right;
+  right: 0px;
+  display: block;
+  cursor: pointer;
+}

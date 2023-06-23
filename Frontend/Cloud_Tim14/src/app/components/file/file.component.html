@@ -49,6 +49,10 @@
     </form>
   </div>
 
+  <div *ngIf="isEditFileDisplayed" id="edit-file">
+    <app-edit-file [path]="path" (updatedFile)="updateFileValues($event)" [file]="file" (close)="closeEditFile()"></app-edit-file>
+  </div>
+
   <div *ngIf="isChangeAlbumFromDisplayed" style="margin-top: 5px">
     <form [formGroup]="changeAlbumFormGroup" (ngSubmit)="changeAlbum()">
       <input

@@ -12,8 +12,11 @@ export class FileComponent {
   isShareFormDisplayed: boolean = false;
   isRemoveSharingFormDisplayed: boolean = false;
   isChangeAlbumFromDisplayed: boolean = false;
+  isEditFileDisplayed: boolean = false;   
+  @Input() path: string = "";
   @Output() closing:EventEmitter<boolean> = new EventEmitter<boolean>(); 
   @Output() download:EventEmitter<string> = new EventEmitter<string>();
+  @Output() moved: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 
   shareFormGroup: FormGroup = new FormGroup({
@@ -61,8 +64,11 @@ export class FileComponent {
   }
 
   editFile(): void {
-    const queryParams = { object: JSON.stringify(this.file) };
-    this.router.navigate(['file-edit'], { queryParams });
+    this.isEditFileDisplayed = true;
+  }
+
+  closeEditFile(){
+    this.isEditFileDisplayed = false;
   }
 
   downloadFile(): void {
@@ -78,5 +84,10 @@ export class FileComponent {
 
   close():void{
     this.closing.emit(true);
+  }
+
+  updateFileValues(file:MyFile){
+    this.file = file;
+    this.moved.emit(true)
   }
 }

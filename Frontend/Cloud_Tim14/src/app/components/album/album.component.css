@@ -14,6 +14,8 @@
   left: 0px;
   padding: 1px;
   color: #ffffff;
+  width: 100%;
+  height: 80%;
 }
 
 .album-details {
@@ -88,3 +90,4 @@ input:disabled{
   background: #999;
   color: white;
 }
+

@@ -199,6 +199,44 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
 
+  renameMetaData:
+    handler: renameMetaData/rename_metadata.rename_metadata
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "renameMetaData/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: rename-metadata
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+    
+  updateMetaData:
+    handler: updateMetaData/update_metadata.update_metadata
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "updateMetaData/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: update-metadata
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
   uploadFile:
     handler: fileUpload/upload_file.upload_file
     package:
@@ -273,6 +311,27 @@ functions:
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  moveFile:
+    handler: moveFile/move_file.move_file
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "moveFile/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: move-file
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
 
   removePermission:
     handler: removeViewPermission/remove_view_permission.remove_permission

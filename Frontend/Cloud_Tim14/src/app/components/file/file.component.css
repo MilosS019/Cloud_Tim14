@@ -83,3 +83,26 @@ button:hover {
   width: 50px;
   cursor: pointer;
 }
+
+#edit-file{
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(black, black, black, 0.3);
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#close{
+  position: fixed;
+  top: 60px;
+  right: 10px;
+}
+
+#close img{
+  width: 60px;
+  height: 60px;
+}

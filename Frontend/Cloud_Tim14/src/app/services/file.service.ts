@@ -41,7 +41,20 @@ export class FileService {
     return this.http.put(`${environment.baseUrl}files`, {"path": filepath})
   }
 
+  public renameMetaData(fileParams:any):Observable<any>{
+    return this.http.put(`${environment.baseUrl}rename-metadata`, fileParams)
+  }
+
+  public updateMetaData(fileParams:any):Observable<any>{
+    return this.http.put(`${environment.baseUrl}update-metadata`, fileParams)
+  }
+
+  public moveFile(fileParams:any):Observable<any>{
+    return this.http.put(`${environment.baseUrl}move-file`, fileParams)
+  }
+
   public downloadFiles(filepath:string):Observable<any>{
     return this.http.put(`${environment.baseUrl}download`, {"path": filepath});
   }
+
 }

@@ -44,7 +44,6 @@ export class FileUploadComponent {
         description: this.description.value,
         tags: this.tags
       })
-    console.log(this.path)
     const fileReader = new FileReader();
     await this.setUpFileReader(fileReader, fileInfoParams) 
     fileReader.readAsDataURL(this.file)
@@ -81,7 +80,6 @@ export class FileUploadComponent {
         data => {
           this.fileService.uploadMetaData(fileInfoParams).subscribe(
             data => {
-              console.log(data)
               alert("File uploaded succsefully")
               this.update();
             }

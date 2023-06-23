@@ -12,12 +12,11 @@ def rename_folder(event, context):
     old_path = email + old_path
     new_path = email + new_path
 
-    # print(old_path)
-    # print(new_path)
-
-    s3.copy_object(Bucket="tim7-project-files-bucket", CopySource={'Bucket': "tim7-project-files-bucket", 'Key': old_path}, Key=new_path)
+    print(old_path)
+    print(new_path)
     
     response = s3.list_objects_v2(Bucket="tim7-project-files-bucket", Prefix = old_path)
+    print(response)
     keys = []
     if 'Contents' in response:
         keys = [obj['Key'] for obj in response['Contents']]

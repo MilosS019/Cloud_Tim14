@@ -107,6 +107,7 @@ export class AlbumsComponent implements OnInit {
     }
     this.fileService.getFiles(this.currentpath).subscribe({
       next: (data) => {
+        console.log(data)
         for (let file of data) {
           let file_path = file.split('/');
           let file_name = file_path[file_path.length - 1];
@@ -133,8 +134,6 @@ export class AlbumsComponent implements OnInit {
     if (this.pathHistory.length == 0) return;
     this.currentAlbum = this.pathHistory.pop()!;
     let indexOfSlash = this.currentpath.lastIndexOf('/');
-    this.currentpath = this.currentpath.slice(0, indexOfSlash);
-    indexOfSlash = this.currentpath.lastIndexOf('/');
     this.currentpath = this.currentpath.slice(0, indexOfSlash + 1);
     this.updateVisual(this.currentAlbum);
   }
@@ -192,7 +191,16 @@ export class AlbumsComponent implements OnInit {
     this.showUploadFileDialog = false;
   }
 
-  rename(oldAndNewFolderName:any){
+  rename(oldAndNewFolderName:any, album: PhotoAlbum){
+    this.allFolders[oldAndNewFolderName[1]] = this.allFolders[oldAndNewFolderName[0]]
+    delete this.allFolders[oldAndNewFolderName[0]]
+    album.name = oldAndNewFolderName[1]
+
+    console.log(oldAndNewFolderName[0])
+
+    let index = this.allFolders[this.currentAlbum].findIndex((element: any) => element == oldAndNewFolderName[0])
+    this.allFolders[this.currentAlbum][index] = oldAndNewFolderName[1]
+
     let old_path = this.currentpath + oldAndNewFolderName[0] + "/";
     let new_path = this.currentpath + oldAndNewFolderName[1] + "/";
     console.log(old_path)
