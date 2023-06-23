@@ -1,6 +1,6 @@
 import json
 import boto3
-from utility.utils import create_response
+from utility.utils import *
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('userTable')
@@ -36,8 +36,8 @@ def is_request_valid(body_request):
 
 
 def is_user_exist(user_email):
-    existing_user = table.get_item(Key={'email': user_email})
-    if existing_user.get('Item'):
+    existing_user = query_table
+    if len(existing_user) != 0:
         raise Exception("User already exists!")
 
 
