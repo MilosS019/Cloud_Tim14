@@ -75,3 +75,38 @@ def check_email_verification(email_address):
         return True
     else:
         return False
+
+
+def create_and_verify_cognito_user(email, password):
+    client = boto3.client('cognito-idp', region_name='eu-central-1')
+
+    user_pool_id = 'eu-central-1_lkZoVquK6'
+
+    response = client.admin_create_user(
+        UserPoolId=user_pool_id,
+        Username=email,
+        TemporaryPassword=password,
+        UserAttributes=[
+            {'Name': 'email_verified', 'Value': 'true'},
+            {'Name': 'email', 'Value': email}
+        ],
+        MessageAction='SUPPRESS',
+        DesiredDeliveryMediums=[]
+    )
+
+    user_id = response['User']['Username']
+
+    client.admin_update_user_attributes(
+        UserPoolId=user_pool_id,
+        Username=user_id,
+        UserAttributes=[
+            {'Name': 'email_verified', 'Value': 'true'}
+        ]
+    )
+
+    client.admin_set_user_password(
+        UserPoolId=user_pool_id,
+        Username=user_id,
+        Password=password,
+        Permanent=True
+    )

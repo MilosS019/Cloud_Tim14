@@ -12,11 +12,12 @@
       <p><strong>Birthday:</strong> {{ registrationRequest.birthday }}</p>
     </div>
     <div class="user-actions">
-      <button (click)="accept()" class="accept-btn">Accept</button>
+      <button (click)="accept(registrationRequest, i)" class="accept-btn">
+        Accept
+      </button>
       <button (click)="reject(registrationRequest, i)" class="reject-btn">
         Reject
       </button>
     </div>
   </div>
-  <!-- Dodajte ostale div elemente za druge korisnike -->
 </div>

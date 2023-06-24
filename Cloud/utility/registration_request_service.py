@@ -49,3 +49,15 @@ def get_all_registration_request_for_inviter(inviter_email):
         if request["inviter_email"] == inviter_email:
             inviter_user_requests.append(request)
     return inviter_user_requests
+
+
+def get_registration_request(inviter_email, invited_user_email):
+    response = registration_request_table.scan()
+    items = response.get('Items', [])
+
+    requests = [item for item in items]
+    print(requests)
+    for request in requests:
+        if request["invited_user_email"] == invited_user_email and request['inviter_email'] == inviter_email:
+            return request
+    raise Exception("User not found!")

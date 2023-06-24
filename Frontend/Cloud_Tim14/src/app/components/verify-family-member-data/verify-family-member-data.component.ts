@@ -22,8 +22,19 @@ export class VerifyFamilyMemberDataComponent implements OnInit {
     );
   }
 
-  public accept(): void {
-    console.log('accept');
+  public accept(registrationRequest: RegistrationRequest, index: number): void {
+    this.registrationRequestService
+      .acceptRequest(registrationRequest.invited_user_email)
+      .subscribe(
+        (response: any) => {
+          this.registrationRequests.splice(index, 1);
+          alert(response.message);
+        },
+        (err) => {
+          console.log(err);
+          alert(err.error);
+        }
+      );
   }
   public reject(registrationRequest: RegistrationRequest, index: number): void {
     this.registrationRequestService

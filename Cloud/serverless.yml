@@ -21,6 +21,13 @@ provider:
 
     - Effect: Allow
       Action:
+        - cognito-idp:AdminCreateUser
+        - cognito-idp:AdminUpdateUserAttributes
+        - cognito-idp:AdminSetUserPassword
+      Resource: "*"
+
+    - Effect: Allow
+      Action:
         - ses:VerifyEmailIdentity
       Resource: "*"
 
@@ -338,6 +345,19 @@ functions:
           method: post
           cors: true
 
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  acceptRequest:
+    handler: acceptRegistrationRequest/accept_registration_request.accept_request
+    package:
+      include: "acceptRegistrationRequest/**"
+    events:
+      - http:
+          path: accept-registration-request
+          method: post
+          cors: true
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
