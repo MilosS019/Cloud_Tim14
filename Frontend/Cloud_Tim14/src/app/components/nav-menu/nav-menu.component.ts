@@ -37,12 +37,12 @@ export class NavMenuComponent {
   }
 
   public fetchUsers() {
-    // this.usersService.fetchUsers().subscribe(
-    //   (response) => {
-    //     console.log(response);
-    //   },
-    //   (err) => alert(err.error.message)
-    // );
+    this.usersService.fetchUsers().subscribe(
+      (response) => {
+        console.log(response);
+      },
+      (err) => alert(err.error.message)
+    );
   }
 
   public goToAlbumsPage() {
@@ -54,5 +54,13 @@ export class NavMenuComponent {
 
   public goToCreateAlbumPage() {
     this.router.navigate(['create-album']);
+  }
+
+  public goToInviteFamilyMemberPage() {
+    this.router.navigate(['invite-family-member']);
+  }
+
+  public goToVerifyFamilyMemberPage() {
+    this.router.navigate(['verify-family-member']);
   }
 }

@@ -1,0 +1,22 @@
+<div class="users-container">
+  <div
+    *ngFor="let registrationRequest; let i = index; of: registrationRequests"
+    class="user"
+  >
+    <div class="user-info">
+      <p><strong>Name:</strong> {{ registrationRequest.name }}</p>
+      <p><strong>Lastname:</strong> {{ registrationRequest.lastname }}</p>
+      <p>
+        <strong>Email:</strong> {{ registrationRequest.invited_user_email }}
+      </p>
+      <p><strong>Birthday:</strong> {{ registrationRequest.birthday }}</p>
+    </div>
+    <div class="user-actions">
+      <button (click)="accept()" class="accept-btn">Accept</button>
+      <button (click)="reject(registrationRequest, i)" class="reject-btn">
+        Reject
+      </button>
+    </div>
+  </div>
+  <!-- Dodajte ostale div elemente za druge korisnike -->
+</div>

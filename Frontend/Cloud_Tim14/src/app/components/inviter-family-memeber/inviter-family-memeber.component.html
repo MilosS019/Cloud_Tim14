@@ -1,0 +1,11 @@
+<div class="main-container">
+  <form [formGroup]="formGroup" (ngSubmit)="sendInvite()" class="form-container">
+    <div class="form-field-container">
+      <label for="email">Email</label>
+      <input type="email" name="email" formControlName="email" />
+    </div>
+    <div class="buttons-layout">
+      <button type="submit" class="submit-button">Login</button>
+    </div>
+  </form>
+</div>

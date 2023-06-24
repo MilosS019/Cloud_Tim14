@@ -9,6 +9,9 @@ import { NotAuthorizedGuard } from './guards/not-authorized.guard';
 import { FilesComponent } from './components/files/files.component';
 import { CreateAlbumComponent } from './components/create-album/create-album.component';
 import { EditFileComponent } from './components/edit-file/edit-file.component';
+import { InviterFamilyMemeberComponent } from './components/inviter-family-memeber/inviter-family-memeber.component';
+import { VerifyFamilyMemberDataComponent } from './components/verify-family-member-data/verify-family-member-data.component';
+import { RegisterFamilyMemberComponent } from './components/register-family-member/register-family-member.component';
 
 const routes: Routes = [
   {
@@ -45,6 +48,23 @@ const routes: Routes = [
     path: 'file-edit',
     component: EditFileComponent,
     canActivate: [AuthorizedGuard],
+  },
+  {
+    path: 'invite-family-member',
+    component: InviterFamilyMemeberComponent,
+    canActivate: [AuthorizedGuard],
+  },
+
+  {
+    path: 'verify-family-member',
+    component: VerifyFamilyMemberDataComponent,
+    canActivate: [AuthorizedGuard],
+  },
+
+  {
+    path: 'register-family-member',
+    component: RegisterFamilyMemberComponent,
+    canActivate: [NotAuthorizedGuard],
   },
 ];
 

@@ -1,27 +1,32 @@
 import json
 import boto3
 from utility.utils import *
+from utility.user_service import *
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('userTable')
+user_table_name = "userTable"
+registration_request_table_name = "registrationRequestTable2"
+
+user_table = dynamodb.Table(user_table_name)
+registration_request_table = dynamodb.Table(registration_request_table_name)
 
 
 def save(event, context):
-    body_message = {'message': ''}
     try:
-        print(event)
         request_body = json.loads(event['body'])
-        is_request_valid(request_body)
-        is_user_exist(request_body["email"])
+
+        _is_request_valid(request_body)
+        _is_user_exist(request_body["email"])
+
         save_user(request_body)
 
-        message = 'Registration successful'
-        return create_response(200, message)
+        return create_response(200, {"message": "Registration successful"})
+
     except Exception as e:
         return create_response(400, str(e))
 
 
-def is_request_valid(body_request):
+def _is_request_valid(body_request):
     email = body_request["email"]
     password = body_request["password"]
     name = body_request["name"]
@@ -35,18 +40,6 @@ def is_request_valid(body_request):
         raise Exception("Fields cannot be empty!")
 
 
-def is_user_exist(user_email):
-    existing_user = query_table
-    if len(existing_user) != 0:
+def _is_user_exist(user_email):
+    if is_user_exist(user_email):
         raise Exception("User already exists!")
-
-
-def save_user(request_body):
-    response = table.put_item(
-        Item={
-            'email': request_body["email"],
-            'password': request_body["password"],
-            'name': request_body["name"],
-            'lastname': request_body["lastname"],
-            'birthday': request_body["birthday"],
-        })

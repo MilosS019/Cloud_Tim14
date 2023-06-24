@@ -29,4 +29,8 @@ export class PermissionService {
       body: permissionObj,
     });
   }
+
+  public getLoggedUserPermissions() {
+    return this.http.get(`${environment.baseUrl}file-permission`);
+  }
 }
