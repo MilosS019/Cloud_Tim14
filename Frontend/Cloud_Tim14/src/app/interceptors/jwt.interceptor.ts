@@ -20,7 +20,10 @@ export class JwtInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
     // Provera da li se zahtev odnosi na specifični endpoint koji želite da preskočite
-    if (request.url.includes(`${environment.baseUrl}users`)) {
+    if (
+      request.url.includes(`${environment.baseUrl}save/users`) ||
+      request.url.includes(`${environment.baseUrl}save/registration-request`)
+    ) {
       // Ako je zahtev za specifični endpoint, ne primenjuj interceptor
       return next.handle(request);
     }

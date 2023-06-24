@@ -55,4 +55,12 @@ export class NavMenuComponent {
   public goToCreateAlbumPage() {
     this.router.navigate(['create-album']);
   }
+
+  public goToInviteFamilyMemberPage() {
+    this.router.navigate(['invite-family-member']);
+  }
+
+  public goToVerifyFamilyMemberPage() {
+    this.router.navigate(['verify-family-member']);
+  }
 }

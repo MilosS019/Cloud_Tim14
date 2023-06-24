@@ -21,6 +21,9 @@ import { EditFileComponent } from './components/edit-file/edit-file.component';
 import { CreateAlbumsComponent } from './components/create-albums/create-albums.component';
 import { FileDetailsComponent } from './components/file-details/file-details.component';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
+import { InviterFamilyMemeberComponent } from './components/inviter-family-memeber/inviter-family-memeber.component';
+import { RegisterFamilyMemberComponent } from './components/register-family-member/register-family-member.component';
+import { VerifyFamilyMemberDataComponent } from './components/verify-family-member-data/verify-family-member-data.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +41,9 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
     EditFileComponent,
     CreateAlbumsComponent,
     FileDetailsComponent,
+    InviterFamilyMemeberComponent,
+    RegisterFamilyMemberComponent,
+    VerifyFamilyMemberDataComponent,
   ],
   imports: [
     BrowserModule,
