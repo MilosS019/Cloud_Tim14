@@ -14,7 +14,7 @@ export class RegistrationRequestService {
 
   public saveRegistrationRequest(request: RegistrationRequest) {
     return this.http.post(
-      `${environment.baseUrl}registration-request`,
+      `${environment.baseUrl}save/registration-request`,
       request
     );
   }
@@ -24,6 +24,14 @@ export class RegistrationRequestService {
     return this.http.delete(`${environment.baseUrl}registration-request`, {
       body: obj,
     });
+  }
+
+  public acceptRequest(invited_user_email: string) {
+    let obj = { invited_user_email: invited_user_email };
+    return this.http.post(
+      `${environment.baseUrl}accept-registration-request`,
+      obj
+    );
   }
 
   public getRegistrationRequests(): Observable<Array<RegistrationRequest>> {
