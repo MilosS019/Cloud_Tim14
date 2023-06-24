@@ -20,7 +20,7 @@ export class UsersService {
     //   lastname: 'value1',
     //   birthday: 'value1',
     // };
-    return this.http.post(`${environment.baseUrl}users`, user);
+    return this.http.post(`${environment.baseUrl}save/users`, user);
   }
 
   public fetchUsers() {

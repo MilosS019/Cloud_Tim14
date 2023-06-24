@@ -178,6 +178,25 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
 
+  getAllFiles:
+    handler: getAllFiles/get_all_files.get_all_files
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "getAllFiles/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: all-files
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
   downloadFiles:
     handler: fileDownload/download_file.download_file
     package:
@@ -215,6 +234,65 @@ functions:
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  downloadShared:
+    handler: downloadShared/download_shared.download_shared
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "downloadShared/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: download-shared
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  getSharedMetaData:
+    handler: getSharedMetaData/get_shared_metadata.get_shared_metadata
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "getSharedMetaData/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: shared-metadata
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+
+  addPermission:
+    handler: addPermission/add_permission.add_permission
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "addPermission/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: file-permission  
+          # HTTP method for this endpoint
+          method: post
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
 
   uploadMetaData:
     handler: metaDataUpload/upload_meta_data.upload_file
@@ -314,20 +392,6 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
 
-  addPermission:
-    handler: addViewPermission/add_view_permission.add_permission
-    package:
-      include: "addViewPermission/**"
-    events:
-      - http:
-          path: file-permission
-          method: post
-          cors: true
-
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId: { Ref: MyApiGatewayAuthorizer }
-
   renameFolder:
     handler: renameFolder/rename_folder.rename_folder
     package:
@@ -421,7 +485,7 @@ functions:
           # Path for this endpoint
           path: get-shared-files
           # HTTP method for this endpoint
-          method: put
+          method: get
           # Enable CORS. Don't forget to return the right header in your response
           cors: true
 

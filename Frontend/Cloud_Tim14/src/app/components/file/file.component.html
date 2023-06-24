@@ -14,12 +14,12 @@
       <p>Tags: {{ file.tags }}</p>
     </div>
     <div class="file-actions">
-      <i (click)="openShareFileForm()" class="fas fa-share"></i>
-      <i (click)="openRemoveSharingFileForm()" class="fas fa-unlink"></i>
-      <i (click)="editFile()" class="fas fa-edit"></i>
+      <i *ngIf="!isReadOnly" (click)="openShareFileForm()" class="fas fa-share"></i>
+      <i *ngIf="!isReadOnly" (click)="openRemoveSharingFileForm()" class="fas fa-unlink"></i>
+      <i *ngIf="!isReadOnly" (click)="editFile()" class="fas fa-edit"></i>
       <i (click)="downloadFile()" class="fa fa-download"></i>
-      <i (click)="openChangeAlbumForm()" class="fa fa-arrow-right"></i>
-      <i (click)="openAreYouSureDialog()" class="fa fa-trash"></i>
+      <i *ngIf="!isReadOnly" (click)="openChangeAlbumForm()" class="fa fa-arrow-right"></i>
+      <i *ngIf="!isReadOnly" (click)="openAreYouSureDialog()" class="fa fa-trash"></i>
     </div>
   </div>
 

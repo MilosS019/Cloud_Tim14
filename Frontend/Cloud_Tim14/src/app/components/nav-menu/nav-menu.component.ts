@@ -63,4 +63,8 @@ export class NavMenuComponent {
   public goToVerifyFamilyMemberPage() {
     this.router.navigate(['verify-family-member']);
   }
+  
+  public goToSharedFiles() {
+    this.router.navigate(['shared-files']);
+  }
 }

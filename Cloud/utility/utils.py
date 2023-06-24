@@ -80,7 +80,7 @@ def check_email_verification(email_address):
 def create_and_verify_cognito_user(email, password):
     client = boto3.client('cognito-idp', region_name='eu-central-1')
 
-    user_pool_id = 'eu-central-1_lkZoVquK6'
+    user_pool_id = 'eu-central-1_2sxC0DLf2'
 
     response = client.admin_create_user(
         UserPoolId=user_pool_id,

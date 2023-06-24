@@ -7,10 +7,10 @@
     </div>
   </div>
   <div class="file-actions">
-    <i (click)="openShareAlbumForm()" class="fas fa-share"></i>
-    <i (click)="openRemoveSharingAlbumForm()" class="fas fa-unlink"></i>
-    <i (click)="rename(name)" class = "fas fa-edit"></i>
-    <i (click)="deleteAlbum()" class="fas fa-trash"></i>
+    <i *ngIf="!isReadOnly" (click)="openShareAlbumForm()" class="fas fa-share"></i>
+    <i *ngIf="!isReadOnly" (click)="openRemoveSharingAlbumForm()" class="fas fa-unlink"></i>
+    <i *ngIf="!isReadOnly" (click)="rename(name)" class = "fas fa-edit"></i>
+    <i *ngIf="!isReadOnly" (click)="deleteAlbum()" class="fas fa-trash"></i>
   </div>
 </div>
 

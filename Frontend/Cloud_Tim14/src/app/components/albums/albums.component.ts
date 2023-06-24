@@ -10,7 +10,12 @@ import { MyFile } from 'src/app/models/myFile.model';
 })
 export class AlbumsComponent implements OnInit {
   albums: Array<PhotoAlbum> = [];
+  sharedAlbums: Array<PhotoAlbum> = [];
+  
   files: any = [];
+  sharedFiles: any = [];
+
+  showFileInformationDialogReadOnly = false;
   showFolderCreationDialog = false;
   showFileInformationDialog = false;
   showUploadFileDialog = false;
@@ -26,6 +31,10 @@ export class AlbumsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getFolders();
+  }
+
+  getFolders(){
     this.fileService.getFolders().subscribe({
       next: (data) => {
         this.rootFolder = data['folders']['SignedUserEmail'];
@@ -64,6 +73,8 @@ export class AlbumsComponent implements OnInit {
       let album: PhotoAlbum = { name: albumName, numberOfFiles: 0 };
       this.albums.push(album);
     }
+    this.allFolders[this.currentAlbum].push(albumName)
+    this.allFolders[albumName] = []
     this.showFolderCreationDialog = false;
   }
 
@@ -81,6 +92,25 @@ export class AlbumsComponent implements OnInit {
         };
         this.selectedFile = fileInfo;
         this.showFileInformationDialog = true;
+      },
+      error: (data) => {},
+    });
+  }
+
+  openDescriptionReadOnly(file: any) {
+    this.fileService.getSharedMetaData(file[0]).subscribe({
+      next: data => {
+        let fileInfo: MyFile = {
+          name: file[0],
+          size: data.Item.size,
+          creationDate: '12.12.2020',
+          lastModifiedDate: data.Item.lastModified,
+          type: data.Item.type,
+          description: data.Item.description,
+          tags: [],
+        };
+        this.selectedFile = fileInfo;
+        this.showFileInformationDialogReadOnly = true;
       },
       error: (data) => {},
     });
@@ -131,6 +161,7 @@ export class AlbumsComponent implements OnInit {
     this.updateVisual(albumName);
   }
 
+  
   goBack() {
     if (this.pathHistory.length == 0) return;
     this.currentAlbum = this.pathHistory.pop()!;
