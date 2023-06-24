@@ -18,6 +18,10 @@
   <app-are-you-sure-dialog (no)="closeAreYouSureDialog()" (yes)="callbackFunction(name)"></app-are-you-sure-dialog>
 </div>
 
+<div *ngIf = "areYouSureDialogDelete">
+  <app-are-you-sure-dialog (no)="closeAreYouSureDialog()" (yes)="callbackFunction()"></app-are-you-sure-dialog>
+</div>
+
 <div *ngIf="isShareFormDisplayed" style="margin-bottom: 10px">
   <form [formGroup]="shareFormGroup" (ngSubmit)="shareAlbum()">
     <input

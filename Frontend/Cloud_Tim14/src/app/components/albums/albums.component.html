@@ -1,7 +1,7 @@
 <h1>Albums</h1>
 <div class="albums-container">
   <div *ngFor="let album of albums">
-    <app-album (renamed)="rename($event, album)" (albumOpening)="changeFolder($event)" [album]="album"></app-album>
+    <app-album (deleted)="deleteAlbum(album)" (renamed)="rename($event, album)" (albumOpening)="changeFolder($event)" [album]="album"></app-album>
   </div>
 </div>
 <div id = "add-albums">
@@ -30,7 +30,7 @@
 </div>
 
 <div class="file-information" *ngIf="showFileInformationDialog">
-    <app-file (moved)="updateVisual(currentAlbum)" [path]="currentpath" (download)="download($event)" (closing)="closeFileInformation()" [file]="selectedFile"></app-file>
+    <app-file (moved)="updateVisual(currentAlbum)" (movedToAlbum)="moveFile($event)" [path]="currentpath" (download)="download($event)" (closing)="closeFileInformation()" [file]="selectedFile"></app-file>
 </div>
 
 <div class="file-upload" *ngIf="showUploadFileDialog">

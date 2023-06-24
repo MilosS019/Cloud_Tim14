@@ -68,7 +68,6 @@ export class FileUploadComponent {
   async setUpFileReader(fileReader:FileReader, fileInfoParams:any){
     fileReader.onload = () => {
       const fileData = fileReader.result;
-      console.log(fileData)
       const payload = {
         file: fileData,
         path: this.path + this.file?.name

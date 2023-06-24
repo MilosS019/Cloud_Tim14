@@ -19,7 +19,7 @@
       <i (click)="editFile()" class="fas fa-edit"></i>
       <i (click)="downloadFile()" class="fa fa-download"></i>
       <i (click)="openChangeAlbumForm()" class="fa fa-arrow-right"></i>
-      <i (click)="deleteFile()" class="fa fa-trash"></i>
+      <i (click)="openAreYouSureDialog()" class="fa fa-trash"></i>
     </div>
   </div>
 
@@ -64,6 +64,10 @@
       <button (click)="closeChangeAlbumForm()">Close</button>
     </form>
   </div>
+</div>
+
+<div class="are-you-sure" *ngIf = "isAreYouSureDialogDisplayed">
+  <app-are-you-sure-dialog (no)="closeAreYouSureDialog()" (yes)="deleteFile()"></app-are-you-sure-dialog>
 </div>
 
 <div class="close" (click)="close()">

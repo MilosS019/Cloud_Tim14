@@ -332,6 +332,67 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
 
+  
+  removeFile:
+    handler: removeFile/remove_file.remove_file
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "removeFile/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: remove-file
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  removeFolder:
+    handler: removeFolder/remove_folder.remove_folder
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "removeFolder/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: remove-folder
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  getSharedFiles:
+    handler: getSharedFiles/get_shared_files.get_shared_files
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "getSharedFiles/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: get-shared-files
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
 
   removePermission:
     handler: removeViewPermission/remove_view_permission.remove_permission

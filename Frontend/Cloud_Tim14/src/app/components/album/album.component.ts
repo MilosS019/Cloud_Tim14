@@ -11,10 +11,12 @@ import { Router } from '@angular/router';
 export class AlbumComponent {
   @Output() albumOpening :EventEmitter<string> = new EventEmitter();
   @Output() renamed: EventEmitter<[string,string]> = new EventEmitter();
-
+  @Output() deleted: EventEmitter<string> = new EventEmitter();
   isShareFormDisplayed: boolean = false;
   isRemoveSharingFormDisplayed: boolean = false;
   areYouSureDialog:boolean = false;
+  areYouSureDialogDelete:boolean = false;
+
 
   callbackFunction:any;
 
@@ -51,7 +53,15 @@ export class AlbumComponent {
     this.isRemoveSharingFormDisplayed = false;
   }
 
-  deleteAlbum(): void {}
+  deleteAlbum(): void {
+    this.areYouSureDialogDelete = true
+    this.callbackFunction = this.delete
+  }
+
+  delete(){
+    this.deleted.emit(this.album.name)
+    this.areYouSureDialogDelete = false
+  }
 
   openAlbum(): void {
     this.albumOpening.emit(this.album.name)

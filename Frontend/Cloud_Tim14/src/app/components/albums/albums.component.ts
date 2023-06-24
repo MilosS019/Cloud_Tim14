@@ -19,6 +19,7 @@ export class AlbumsComponent implements OnInit {
   foldersSize: any;
   pathHistory: Array<string> = []
   currentAlbum = ""
+  rootFolder:string = ""
   
   @Output() selectedFile!:MyFile;
   constructor(private fileService:FileService) {
@@ -27,13 +28,13 @@ export class AlbumsComponent implements OnInit {
   ngOnInit() {
     this.fileService.getFolders().subscribe({
       next: (data) => {
-        let rootFolder = data['folders']['SignedUserEmail'];
-        this.currentAlbum = rootFolder;
+        this.rootFolder = data['folders']['SignedUserEmail'];
+        this.currentAlbum = this.rootFolder;
         this.allFolders = data['folders'];
         this.foldersSize = data['folders_size'];
-        this.pathHistory.push(rootFolder);
+        this.pathHistory.push(this.rootFolder);
         console.log(data);
-        for (let folder of data['folders'][rootFolder]) {
+        for (let folder of data['folders'][this.rootFolder]) {
           let album: PhotoAlbum = {
             name: folder,
             numberOfFiles: data['folders_size'][folder],
@@ -134,7 +135,11 @@ export class AlbumsComponent implements OnInit {
     if (this.pathHistory.length == 0) return;
     this.currentAlbum = this.pathHistory.pop()!;
     let indexOfSlash = this.currentpath.lastIndexOf('/');
-    this.currentpath = this.currentpath.slice(0, indexOfSlash + 1);
+    this.currentpath = this.currentpath.slice(0, indexOfSlash);
+    indexOfSlash = this.currentpath.lastIndexOf('/');
+    this.currentpath = this.currentpath.slice(0, indexOfSlash + 1 );
+    
+    console.log(this.currentpath)
     this.updateVisual(this.currentAlbum);
   }
 
@@ -208,6 +213,75 @@ export class AlbumsComponent implements OnInit {
     this.fileService.renameFolder({"oldPath":old_path, "newPath": new_path}).subscribe({
       next: data => {
         console.log(data)
+      },
+      error: data => {
+        console.log(data)
+      }
+    })
+  }
+
+  moveFile(values:[string,string]){
+    let albumName = values[0]
+    let fileName = values[1]
+    let params = {"newPath":"", "oldPath":""}
+    let fileParams: { oldPath: string; path: string; type: string; size: number; lastModified: string; description: string; tags: string[]; };
+    if(albumName == ".."){
+      let prevPath = this.pathHistory[this.pathHistory.length - 1]
+      if(this.pathHistory[this.pathHistory.length - 1] == this.rootFolder)
+        prevPath = ""
+      params = {"newPath": prevPath + "/" + fileName, "oldPath": this.currentpath + fileName}
+      fileParams = {
+        'oldPath':this.currentpath + fileName,
+        'path' : prevPath + "/" + fileName,
+        'type' : this.selectedFile.type,
+        'size' : this.selectedFile.size,
+        'lastModified' : this.selectedFile.lastModifiedDate,
+        'description' : this.selectedFile.description,
+        'tags' : this.selectedFile.tags
+      } 
+    }
+    else if(this.allFolders[this.currentAlbum].includes(albumName)){
+      params = {"newPath": this.currentpath + albumName + "/" + fileName, "oldPath": this.currentpath + fileName}
+      fileParams = {
+        'oldPath': this.currentpath + fileName,
+        'path' : this.currentpath + albumName + "/" + fileName,
+        'type' : this.selectedFile.type,
+        'size' : this.selectedFile.size,
+        'lastModified' : this.selectedFile.lastModifiedDate,
+        'description' : this.selectedFile.description,
+        'tags' : this.selectedFile.tags
+      }
+    }
+    if(params["newPath"] != ""){
+      this.fileService.moveFile(params).subscribe({
+        next: data => {
+          console.log(data)
+          this.fileService.renameMetaData(fileParams).subscribe({
+            next: data => {
+              console.log(data)
+            }
+          })
+          this.updateVisual(this.currentAlbum)
+        },
+        error: data => {
+          console.log(data)
+        } 
+      })
+    }
+    else
+      alert("This is not an existing folder")
+  }
+
+  moveMetaData(albumName:string){
+    let oldPath = this.selectedFile.name;
+    this.selectedFile
+  }
+
+  deleteAlbum(album:PhotoAlbum){
+    this.fileService.deleteAlbum(this.currentpath + album.name + "/").subscribe({
+      next: data=> {
+        console.log(data)
+        this.updateVisual(this.currentAlbum)
       },
       error: data => {
         console.log(data)

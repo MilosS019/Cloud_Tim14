@@ -55,6 +55,14 @@ export class FileService {
 
   public downloadFiles(filepath:string):Observable<any>{
     return this.http.put(`${environment.baseUrl}download`, {"path": filepath});
+  } 
+
+  public removeFile(filepath:string):Observable<any>{
+    return this.http.put(`${environment.baseUrl}remove-file`, {"path": filepath});
+  }
+
+  public deleteAlbum(filepath:string):Observable<any>{
+    return this.http.put(`${environment.baseUrl}remove-folder`, {"path": filepath});
   }
 
 }

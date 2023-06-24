@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MyFile } from '../../models/myFile.model';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { FileService } from 'src/app/services/file.service';
 
 @Component({
   selector: 'app-file',
@@ -13,10 +14,13 @@ export class FileComponent {
   isRemoveSharingFormDisplayed: boolean = false;
   isChangeAlbumFromDisplayed: boolean = false;
   isEditFileDisplayed: boolean = false;   
+  isAreYouSureDialogDisplayed: boolean = false;
   @Input() path: string = "";
   @Output() closing:EventEmitter<boolean> = new EventEmitter<boolean>(); 
   @Output() download:EventEmitter<string> = new EventEmitter<string>();
-  @Output() moved: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() moved: EventEmitter<string> = new EventEmitter<string>();
+  @Output() movedToAlbum: EventEmitter<[string,string]> = new EventEmitter();
+
 
 
   shareFormGroup: FormGroup = new FormGroup({
@@ -32,7 +36,7 @@ export class FileComponent {
   });
 
   @Input() file: MyFile = {} as MyFile;
-  constructor(private router: Router) {}
+  constructor(private router: Router, private fileService:FileService) {}
 
   openShareFileForm(): void {
     this.isShareFormDisplayed = true;
@@ -76,11 +80,24 @@ export class FileComponent {
   }
 
   changeAlbum(): void {
-    let albumName: string = this.changeAlbumFormGroup.value.albumName;
+    this.movedToAlbum.emit([this.changeAlbumFormGroup.value.albumName, this.file.name])
     this.isChangeAlbumFromDisplayed = false;
   }
 
-  deleteFile(): void {}
+  openAreYouSureDialog(){
+    this.isAreYouSureDialogDisplayed = true;
+  }
+
+  deleteFile(): void {
+    this.isAreYouSureDialogDisplayed = false;
+    console.log(this.path + this.file.name)
+    this.fileService.removeFile(this.path + this.file.name).subscribe({
+      next: data => {
+        console.log(data)
+        this.moved.emit("")
+      }
+    })
+  }
 
   close():void{
     this.closing.emit(true);
@@ -88,6 +105,10 @@ export class FileComponent {
 
   updateFileValues(file:MyFile){
     this.file = file;
-    this.moved.emit(true)
+    this.moved.emit("")
+  }
+
+  closeAreYouSureDialog(){
+    this.isAreYouSureDialogDisplayed = false;
   }
 }
