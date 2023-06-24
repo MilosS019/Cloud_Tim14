@@ -444,8 +444,6 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
 
-<<<<<<< HEAD
-=======
   getPermission:
     handler: getViewPermission/get_view_permission.get_permissions
     package:
@@ -524,7 +522,6 @@ functions:
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
->>>>>>> e28cda63f20505f0df5c63e94acf5faed5ecf675
 
 resources:
   Resources:
