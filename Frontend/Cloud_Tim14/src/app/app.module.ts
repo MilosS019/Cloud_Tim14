@@ -22,6 +22,9 @@ import { CreateAlbumsComponent } from './components/create-albums/create-albums.
 import { FileDetailsComponent } from './components/file-details/file-details.component';
 import { AreYouSureDialogComponent } from './components/are-you-sure-dialog/are-you-sure-dialog.component';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
+import { InviterFamilyMemeberComponent } from './components/inviter-family-memeber/inviter-family-memeber.component';
+import { RegisterFamilyMemberComponent } from './components/register-family-member/register-family-member.component';
+import { VerifyFamilyMemberDataComponent } from './components/verify-family-member-data/verify-family-member-data.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +43,9 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
     CreateAlbumsComponent,
     FileDetailsComponent,
     AreYouSureDialogComponent,
+    InviterFamilyMemeberComponent,
+    RegisterFamilyMemberComponent,
+    VerifyFamilyMemberDataComponent,
   ],
   imports: [
     BrowserModule,

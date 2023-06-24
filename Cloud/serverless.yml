@@ -12,6 +12,30 @@ provider:
   environment:
     USER_TABLE: !Ref userTable
   iamRoleStatements:
+    # Dodajemo dozvole za pristup SES-u
+    - Effect: Allow
+      Action:
+        - ses:SendEmail
+        - ses:SendRawEmail
+      Resource: "*"
+
+    - Effect: Allow
+      Action:
+        - cognito-idp:AdminCreateUser
+        - cognito-idp:AdminUpdateUserAttributes
+        - cognito-idp:AdminSetUserPassword
+      Resource: "*"
+
+    - Effect: Allow
+      Action:
+        - ses:VerifyEmailIdentity
+      Resource: "*"
+
+    - Effect: "Allow"
+      Action:
+        - ses:ListVerifiedEmailAddresses
+      Resource: "*"
+
     - Effect: Allow
       Action:
         - dynamodb:DescribeTable
@@ -50,6 +74,18 @@ provider:
 
     - Effect: Allow
       Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "Fn::GetAtt": [registrationRequestTable2, Arn]
+
+    - Effect: Allow
+      Action:
         - s3:ListBucket
         - s3:GetObject
         - s3:GetObjectAcl
@@ -82,7 +118,7 @@ functions:
       # REST API endpoint of API Gateway
       - http:
           # Path for this endpoint
-          path: users
+          path: save/users
           # HTTP method for this endpoint
           method: post
           # Enable CORS. Don't forget to return the right header in your response
@@ -408,6 +444,87 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
 
+<<<<<<< HEAD
+=======
+  getPermission:
+    handler: getViewPermission/get_view_permission.get_permissions
+    package:
+      include: "getViewPermission/**"
+    events:
+      - http:
+          path: file-permission
+          method: get
+          cors: true
+
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  saveRequest:
+    handler: saveRegistrationRequest/save_registration_request.save_request
+    package:
+      include: "saveRegistrationRequest/**"
+    events:
+      - http:
+          path: save/registration-request
+          method: post
+          cors: true
+
+  removeRequest:
+    handler: removeRegistrationRequest/remove_registration_request.remove_request
+    package:
+      include: "removeRegistrationRequest/**"
+    events:
+      - http:
+          path: registration-request
+          method: delete
+          cors: true
+
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  getRequest:
+    handler: getRegistrationRequests/get_registration_requests.get_requests
+    package:
+      include: "getRegistrationRequests/**"
+    events:
+      - http:
+          path: registration-request
+          method: get
+          cors: true
+
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  sendInvite:
+    handler: sendInvite/send_invite.send_invite
+    package:
+      include: "sendInvite/**"
+    events:
+      - http:
+          path: send-invite
+          method: post
+          cors: true
+
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  acceptRequest:
+    handler: acceptRegistrationRequest/accept_registration_request.accept_request
+    package:
+      include: "acceptRegistrationRequest/**"
+    events:
+      - http:
+          path: accept-registration-request
+          method: post
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+>>>>>>> e28cda63f20505f0df5c63e94acf5faed5ecf675
 
 resources:
   Resources:
@@ -421,6 +538,24 @@ resources:
         KeySchema:
           - AttributeName: email
             KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    registrationRequestTable2:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: registrationRequestTable2
+        AttributeDefinitions:
+          - AttributeName: inviter_email
+            AttributeType: S
+          - AttributeName: invited_user_email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: inviter_email
+            KeyType: HASH
+          - AttributeName: invited_user_email
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1

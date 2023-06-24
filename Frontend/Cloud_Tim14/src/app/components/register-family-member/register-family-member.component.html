@@ -1,0 +1,46 @@
+<div class="main-container">
+  <form class="form-container" [formGroup]="formGroup" (ngSubmit)="signUp()">
+    <div class="table-layout">
+      <div class="form-field-container">
+        <label for="invited_user_email">Email</label>
+        <input
+          type="email"
+          name="invited_user_email"
+          formControlName="invited_user_email"
+        />
+      </div>
+      <div class="form-field-container">
+        <label for="password">Password</label>
+        <input type="password" name="password" formControlName="password" />
+      </div>
+      <div class="form-field-container">
+        <label for="name">Name</label>
+        <input type="text" name="name" formControlName="name" />
+      </div>
+      <div class="form-field-container">
+        <label for="lastname">Lastname</label>
+        <input type="text" name="lastname" formControlName="lastname" />
+      </div>
+      <div class="form-field-container">
+        <label for="birthday">Birthday</label>
+        <input
+          type="text"
+          name="birthday"
+          formControlName="birthday"
+          placeholder="09.19.2001"
+        />
+      </div>
+      <div class="form-field-container">
+        <label for="inviter_email">Inviter's Email</label>
+        <input
+          type="text"
+          name="inviter_email"
+          formControlName="inviter_email"
+        />
+      </div>
+    </div>
+    <div class="buttons-layout">
+      <button type="submit" class="submit-button">Create account</button>
+    </div>
+  </form>
+</div>
