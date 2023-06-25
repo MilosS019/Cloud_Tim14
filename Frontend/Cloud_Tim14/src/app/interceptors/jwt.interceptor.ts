@@ -33,7 +33,7 @@ export class JwtInterceptor implements HttpInterceptor {
       mergeMap((response) => {
         let token = response.getIdToken().getJwtToken();
         // Postavljanje Authorization zaglavlja samo ako nije zahtev za specifični endpoint
-        const headers = new HttpHeaders().set('Authorization', token);
+        const headers = new HttpHeaders().set('Authorization', token).set('Content-Type', 'application/json');
         request = request.clone({ headers });
         console.log('request=', request);
         return next.handle(request);

@@ -323,18 +323,6 @@ functions:
       # Include 'registerUser' directory and all child directories
       include: "metaDataUpload/**"
     # Specifies events that trigger the Lambda function
-    events:
-      # REST API endpoint of API Gateway
-      - http:
-          # Path for this endpoint
-          path: upload-metadata
-          # HTTP method for this endpoint
-          method: post
-          # Enable CORS. Don't forget to return the right header in your response
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId: { Ref: MyApiGatewayAuthorizer }
 
   renameMetaData:
     handler: renameMetaData/rename_metadata.rename_metadata
@@ -380,20 +368,6 @@ functions:
       # Include 'registerUser' directory and all child directories
       include: "fileUpload/**"
     # Specifies events that trigger the Lambda function
-    events:
-      # REST API endpoint of API Gateway
-      - http:
-          # Path for this endpoint
-          path: upload-file
-          # HTTP method for this endpoint
-          method: post
-          # Enable CORS. Don't forget to return the right header in your response
-          cors: true
-
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId: { Ref: MyApiGatewayAuthorizer }
-
 
   
   uploadFolder:
@@ -610,6 +584,20 @@ functions:
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  
+  getEmail:
+    handler: getEmail/get_email.get_email
+    package:
+      include: "getEmail/**"
+    events:
+      - http:
+          path: get-email
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
   
   testiramoStep:
     handler: testiramoStep/testiramo_step.testiramo_step
@@ -621,34 +609,69 @@ functions:
     package:
       include: "testiramoStep2/**" 
 
+  undoUpload:
+    handler: undoUpload/undo_upload.undo_upload
+    package:
+      include: "undoUpload/**" 
+
 
 stepFunctions:
   stateMachines:
-    testnaStateMasina:
+    fileUploadStateMachine:
       events:
         - http:
-            path: step-test
-            method: get
+            path: upload-file
+            method: post
             cors: true
             authorizer:
               type: COGNITO_USER_POOLS
               authorizerId: { Ref: MyApiGatewayAuthorizer }
       definition:
-        StartAt: testiramoStep
+        StartAt: uploadFile
         States:
-          testiramoStep:
+          uploadFile:
             Type: Task
             Resource: 
-              Fn::GetAtt: [testiramoStep, Arn]
+              Fn::GetAtt: [uploadFile, Arn]
+            Next: uploadMetaData
+          
+          uploadMetaData:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [uploadMetaData, Arn]
             Catch:
-              - ErrorEquals: ["States.ALL"]
-                Next: testiramoStep2
+            - ErrorEquals: ["States.ALL"]
+              Next: undoUpload
             End: true
           
-          testiramoStep2:
+          undoUpload:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [undoUpload, Arn]
+            End: true
+
+    testnaStateMasina:
+      events:
+        - http:
+            path: step-test
+            method: post
+            cors: true
+            authorizer:
+              type: COGNITO_USER_POOLS
+              authorizerId: { Ref: MyApiGatewayAuthorizer }
+      definition:
+        StartAt: uploadFile
+        States:
+          uploadFile:
             Type: Task
             Resource: 
-              Fn::GetAtt: [testiramoStep2, Arn]
+              Fn::GetAtt: [uploadFile, Arn]
+            Next: uploadMetaData
+          
+          uploadMetaData:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [uploadMetaData, Arn]
             End: true
 
 plugins:

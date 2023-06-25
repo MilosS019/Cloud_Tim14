@@ -9,10 +9,13 @@ from utility.utils import sendToSqs
 def upload_file(event, context):
     try:
         s3 = boto3.client('s3')
-        file_object = json.loads(event['body'])
-        file = file_object["file"]
-        path = file_object["path"]
-        email = event['requestContext']['authorizer']['claims']['email']
+        # file_object = json.loads(event)
+        # print("print2")
+        # print(event)
+        file = event["file"]
+        path = event["path"]
+        email = event["email"]
+        fileParams = event["fileParams"]
         path = email + path
 
         slices = path.split("/")
@@ -26,9 +29,10 @@ def upload_file(event, context):
             file_to_save.write(decoded_image_data)
         s3.upload_file('/tmp/decoded_image' + extension, "tim7-project-files-bucket", path)
 
-        sendToSqs(email, path + " succesfully uploaded", "File upload")
+        # sendToSqs(email, path + " succesfully uploaded", "File upload")
         
-        return create_response(200, 'File uploaded succesfully')
+        return create_response(200, {"fileParams":fileParams, "email":email, "path": path})
     except Exception as e:
+        # raise Exception({"body":event})
         print(e)
-        return create_response(500, {"error" : e})
+        raise Exception("File didnt upload")

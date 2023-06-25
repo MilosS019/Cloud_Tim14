@@ -45,17 +45,24 @@ export class FileUploadComponent {
       return;
     }
     let tagsAsString = this.getTagsAsString(this.tags)
-    const fileInfoParams = JSON.stringify({
+    const fileInfoParams = {
         path: this.path + this.file.name,
         type: this.file.type,
         size: this.file.size,
         lastModified: this.file.lastModified,
         description: this.description.value,
         tags: tagsAsString
-      })
+      }
     const fileReader = new FileReader();
-    await this.setUpFileReader(fileReader, fileInfoParams) 
-    fileReader.readAsDataURL(this.file)
+    this.fileService.getLogedInEmail().subscribe({
+      next: async data => {
+        await this.setUpFileReader(fileReader, fileInfoParams, data["email"]) 
+        fileReader.readAsDataURL(this.file!)
+      },
+      error: data => {
+
+      }
+    })
     // const formData : FormData = new FormData;
     // formData.append('file', this.file)
     // formData.append('path', this.path)
@@ -74,12 +81,14 @@ export class FileUploadComponent {
 
   }
 
-  async setUpFileReader(fileReader:FileReader, fileInfoParams:any){
+  async setUpFileReader(fileReader:FileReader, fileInfoParams:any, email:string){
     fileReader.onload = () => {
       const fileData = fileReader.result;
       const payload = {
         file: fileData,
-        path: this.path + this.file?.name
+        fileParams: fileInfoParams,
+        path: this.path + this.file?.name,
+        email:email
       };
     
       const jsonData = JSON.stringify(payload);
@@ -93,6 +102,7 @@ export class FileUploadComponent {
           //   }
           // );
           console.log(data)
+          this.update();
         }
       );
     };

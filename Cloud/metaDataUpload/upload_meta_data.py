@@ -4,20 +4,20 @@ from utility.utils import create_response
 
 
 def upload_file(event, contenxt):
+    body = json.loads(event['body'])
     try:
         dynamodb = boto3.resource('dynamodb')
-        email = event['requestContext']['authorizer']['claims']['email']
+        email = body["email"]
 
         table = dynamodb.Table('meta-data')
 
-        body = json.loads(event['body'])
-
-        path = body['path']
-        type = body['type']
-        size = body['size']
-        lastModified = body['lastModified']
-        description = body['description']
-        tags = body['tags']
+        fileParams = body["fileParams"]
+        path = fileParams['path']
+        type = fileParams['type']
+        size = fileParams['size']
+        lastModified = fileParams['lastModified']
+        description = fileParams['description']
+        tags = fileParams['tags']
         #<-- dodaj tags -->
         table.put_item(
             Item={
@@ -35,4 +35,5 @@ def upload_file(event, contenxt):
         return create_response(200, message)
     
     except Exception as e:
-        return create_response(500, e)
+        print(e)
+        raise Exception({"path": body["path"]})
