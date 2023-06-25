@@ -81,4 +81,7 @@ export class FileService {
     return this.http.get(`${environment.baseUrl}get-shared-files`);
   }
 
+  public test():Observable<any>{
+    return this.http.get(`${environment.baseUrl}step-test`);
+  }
 }

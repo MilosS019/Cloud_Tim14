@@ -26,6 +26,7 @@ def upload_file(event, contenxt):
                 'size': size,
                 'lastModified': lastModified,
                 'description': description,
+                'tags': tags
             })
 
 

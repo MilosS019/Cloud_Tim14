@@ -41,8 +41,6 @@ export class AlbumsComponent implements OnInit {
         this.currentAlbum = this.rootFolder;
         this.allFolders = data['folders'];
         this.foldersSize = data['folders_size'];
-        this.pathHistory.push(this.rootFolder);
-        console.log(data);
         for (let folder of data['folders'][this.rootFolder]) {
           let album: PhotoAlbum = {
             name: folder,
@@ -78,6 +76,14 @@ export class AlbumsComponent implements OnInit {
     this.showFolderCreationDialog = false;
   }
 
+  getTagsAsArray(tags:string){
+    let tagsArr = []
+    for(let tag of tags.split(",")){
+      tagsArr.push(tag)
+    }
+    return tagsArr
+  }
+
   openDescription(file: any) {
     this.fileService.getMetaData(this.currentpath + file[0]).subscribe({
       next: data => {
@@ -88,29 +94,10 @@ export class AlbumsComponent implements OnInit {
           lastModifiedDate: data.Item.lastModified,
           type: data.Item.type,
           description: data.Item.description,
-          tags: [],
+          tags: this.getTagsAsArray(data.Item.tags),
         };
         this.selectedFile = fileInfo;
         this.showFileInformationDialog = true;
-      },
-      error: (data) => {},
-    });
-  }
-
-  openDescriptionReadOnly(file: any) {
-    this.fileService.getSharedMetaData(file[0]).subscribe({
-      next: data => {
-        let fileInfo: MyFile = {
-          name: file[0],
-          size: data.Item.size,
-          creationDate: '12.12.2020',
-          lastModifiedDate: data.Item.lastModified,
-          type: data.Item.type,
-          description: data.Item.description,
-          tags: [],
-        };
-        this.selectedFile = fileInfo;
-        this.showFileInformationDialogReadOnly = true;
       },
       error: (data) => {},
     });
@@ -251,11 +238,19 @@ export class AlbumsComponent implements OnInit {
     })
   }
 
+  getTagsAsString(tags:string[]){
+    let tagsAsStr = ""
+    for(let tag of tags){
+      tagsAsStr += "," + tag
+    }
+    return tagsAsStr.slice(1, tagsAsStr.length)
+  }
+
   moveFile(values:[string,string]){
     let albumName = values[0]
     let fileName = values[1]
     let params = {"newPath":"", "oldPath":""}
-    let fileParams: { oldPath: string; path: string; type: string; size: number; lastModified: string; description: string; tags: string[]; };
+    let fileParams: { oldPath: string; path: string; type: string; size: number; lastModified: string; description: string; tags: string; };
     if(albumName == ".."){
       let prevPath = this.pathHistory[this.pathHistory.length - 1]
       if(this.pathHistory[this.pathHistory.length - 1] == this.rootFolder)
@@ -268,7 +263,7 @@ export class AlbumsComponent implements OnInit {
         'size' : this.selectedFile.size,
         'lastModified' : this.selectedFile.lastModifiedDate,
         'description' : this.selectedFile.description,
-        'tags' : this.selectedFile.tags
+        'tags' : this.getTagsAsString(this.selectedFile.tags)
       } 
     }
     else if(this.allFolders[this.currentAlbum].includes(albumName)){
@@ -280,7 +275,7 @@ export class AlbumsComponent implements OnInit {
         'size' : this.selectedFile.size,
         'lastModified' : this.selectedFile.lastModifiedDate,
         'description' : this.selectedFile.description,
-        'tags' : this.selectedFile.tags
+        'tags' : this.getTagsAsString(this.selectedFile.tags)
       }
     }
     if(params["newPath"] != ""){

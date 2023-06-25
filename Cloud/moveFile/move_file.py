@@ -1,6 +1,7 @@
 import json
 import boto3
 from utility.utils import create_response
+from utility.utils import sendToSqs
 
 def move_file(event, context):
     try:    
@@ -19,6 +20,8 @@ def move_file(event, context):
         s3.copy_object(Bucket="tim7-project-files-bucket", CopySource={'Bucket': "tim7-project-files-bucket", 'Key': old_path}, Key=new_path)
         s3.delete_object(Bucket="tim7-project-files-bucket", Key=old_path)
         
+        sendToSqs(email, "Succesfully Moved", "File relocation")
+
         return create_response(200, "Renamed succsefully")
     except Exception as e:
         print(e)

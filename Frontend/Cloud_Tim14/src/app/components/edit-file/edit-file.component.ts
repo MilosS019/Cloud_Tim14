@@ -42,13 +42,22 @@ export class EditFileComponent implements OnInit {
     this.tags.push(tag);
   }
 
+  getTagsAsString(tags:string[]){
+    let tagsAsStr = ""
+    for(let tag of tags){
+      tagsAsStr += "," + tag
+    }
+    return tagsAsStr.slice(1, tagsAsStr.length)
+  }
+  
+
   updateFile(): void {
     if(this.formGroup.value.fileName == this.file.name){
       const fileInfoParams = JSON.stringify({
         path: this.path + this.file.name,
         lastModified: Date.now(),
         description: this.formGroup.value.description,
-        tags: this.tags
+        tags: this.getTagsAsString(this.tags)
       })
       this.updateFileValues()
       this.fileService.updateMetaData(fileInfoParams).subscribe({
@@ -68,7 +77,7 @@ export class EditFileComponent implements OnInit {
         size: this.file.size,
         lastModified: Date.now(),
         description: this.formGroup.value.description,
-        tags: this.tags
+        tags: this.getTagsAsString(this.tags)
       })
       this.fileService.moveFile({"oldPath":this.path + this.file.name, "newPath":this.path + this.formGroup.value.fileName}).subscribe({
         next: data => {

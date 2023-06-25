@@ -18,10 +18,11 @@ def update_metadata(event, contenxt):
         tags = body['tags']
         print(description)
         #<-- dodaj tags -->
-        update_expression = 'SET lastModified = :lastModifiedValue, description = :descriptionValue'
+        update_expression = 'SET lastModified = :lastModifiedValue, description = :descriptionValue, tags = :tagsValue'
         expression_attribute_values = {
             ':lastModifiedValue': lastModified,
-            ':descriptionValue': description
+            ':descriptionValue': description,
+            ':tagsValue': tags
         }
         response = table.update_item(
             Key={'emailAndName': email + path},

@@ -2,6 +2,7 @@ import json
 import boto3
 import base64
 from utility.utils import create_response
+from utility.utils import sendToSqs
 
 
 #path parametar mora da krene sa /, npr: /home/album1
@@ -25,6 +26,8 @@ def upload_file(event, context):
             file_to_save.write(decoded_image_data)
         s3.upload_file('/tmp/decoded_image' + extension, "tim7-project-files-bucket", path)
 
+        sendToSqs(email, path + " succesfully uploaded", "File upload")
+        
         return create_response(200, 'File uploaded succesfully')
     except Exception as e:
         print(e)

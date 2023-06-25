@@ -31,18 +31,27 @@ export class FileUploadComponent {
         this.fileName = this.file.name
     }
 
+  getTagsAsString(tags:string[]){
+    let tagsAsStr = ""
+    for(let tag of tags){
+      tagsAsStr += "," + tag
+    }
+    return tagsAsStr.slice(1, tagsAsStr.length)
+  }
+
   async upload(){
     if (!this.file){
       alert("file not selected")
       return;
     }
+    let tagsAsString = this.getTagsAsString(this.tags)
     const fileInfoParams = JSON.stringify({
         path: this.path + this.file.name,
         type: this.file.type,
         size: this.file.size,
         lastModified: this.file.lastModified,
         description: this.description.value,
-        tags: this.tags
+        tags: tagsAsString
       })
     const fileReader = new FileReader();
     await this.setUpFileReader(fileReader, fileInfoParams) 
@@ -77,12 +86,13 @@ export class FileUploadComponent {
     
       this.fileService.uploadFile(jsonData).subscribe(
         data => {
-          this.fileService.uploadMetaData(fileInfoParams).subscribe(
-            data => {
-              alert("File uploaded succsefully")
-              this.update();
-            }
-          );
+          // this.fileService.uploadMetaData(fileInfoParams).subscribe(
+          //   data => {
+          //     alert("File uploaded succsefully")
+          //     this.update();
+          //   }
+          // );
+          console.log(data)
         }
       );
     };

@@ -1,6 +1,7 @@
 import json
 import boto3
 from utility.utils import create_response
+from utility.utils import sendToSqs
 
 def remove_file(event, context):
     try:
@@ -20,6 +21,9 @@ def remove_file(event, context):
                 }
             )
         
+        file_name = path.split('/')[-1]
+        sendToSqs(email, file_name + " succesfully deleted", "File removal")
+
         return create_response(200, "Deleted succsefully")
     
     except Exception as e:

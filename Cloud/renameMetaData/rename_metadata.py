@@ -1,6 +1,7 @@
 import json
 import boto3
 from utility.utils import create_response
+from utility.utils import sendToSqs
 
 
 def rename_metadata(event, contenxt):
@@ -27,6 +28,7 @@ def rename_metadata(event, contenxt):
                 'size': size,
                 'lastModified': lastModified,
                 'description': description,
+                'tags': tags
             })
         
         table.delete_item(
@@ -35,9 +37,13 @@ def rename_metadata(event, contenxt):
             }
         )
 
-
     # # return a properly formatted JSON object
         message = 'Metadata uploaded succesfully'
+
+        oldName = oldPath.split("/")[-1]
+        newName = path.split("/")[-1]
+        sendToSqs(email, oldName + " renamed succesfully to " + newName, email)
+        
         return create_response(200, message)
     
     except Exception as e:

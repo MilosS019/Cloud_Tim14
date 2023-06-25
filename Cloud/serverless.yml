@@ -86,6 +86,18 @@ provider:
 
     - Effect: Allow
       Action:
+        - sqs:SendMessage
+        - sqs:ReceiveMessage
+        - sqs:DeleteMessage
+        - sqs:PurgeQueue
+        - sqs:CreateQueue
+        - sqs:DeleteQueue
+        - sqs:GetQueueUrl
+      Resource:
+        - "Fn::GetAtt": [notificationQueue, Arn]
+
+    - Effect: Allow
+      Action:
         - s3:ListBucket
         - s3:GetObject
         - s3:GetObjectAcl
@@ -294,6 +306,17 @@ functions:
             authorizerId: { Ref: MyApiGatewayAuthorizer }
 
 
+  sendNotification:
+    handler: sendNotification/send_notification.send_notification
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "sendNotification/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - sqs:
+          arn: "arn:aws:sqs:eu-central-1:841941972097:notificationQueue"
+
   uploadMetaData:
     handler: metaDataUpload/upload_meta_data.upload_file
     package:
@@ -370,6 +393,7 @@ functions:
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
+
 
   
   uploadFolder:
@@ -586,9 +610,61 @@ functions:
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
+  
+  testiramoStep:
+    handler: testiramoStep/testiramo_step.testiramo_step
+    package:
+      include: "testiramoStep/**"
+    
+  testiramoStep2:
+    handler: testiramoStep2/testiramo_step2.testiramo_step2
+    package:
+      include: "testiramoStep2/**" 
+
+
+stepFunctions:
+  stateMachines:
+    testnaStateMasina:
+      events:
+        - http:
+            path: step-test
+            method: get
+            cors: true
+            authorizer:
+              type: COGNITO_USER_POOLS
+              authorizerId: { Ref: MyApiGatewayAuthorizer }
+      definition:
+        StartAt: testiramoStep
+        States:
+          testiramoStep:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [testiramoStep, Arn]
+            Catch:
+              - ErrorEquals: ["States.ALL"]
+                Next: testiramoStep2
+            End: true
+          
+          testiramoStep2:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [testiramoStep2, Arn]
+            End: true
+
+plugins:
+    - serverless-step-functions
 
 resources:
   Resources:
+    notificationQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: notificationQueue
+        VisibilityTimeout: 300
+        DelaySeconds: 0
+        MaximumMessageSize: 262144
+        ReceiveMessageWaitTimeSeconds: 20
+
     userTable:
       Type: AWS::DynamoDB::Table
       Properties:

@@ -110,3 +110,10 @@ def create_and_verify_cognito_user(email, password):
         Password=password,
         Permanent=True
     )
+
+
+def sendToSqs(receiver, message, subject):
+    sqs = boto3.client('sqs')
+    response = sqs.get_queue_url(QueueName="notificationQueue")
+    queue_url = response['QueueUrl']
+    sqs.send_message(QueueUrl = queue_url, MessageBody = json.dumps({"receiver":receiver,"message": message, "subject": subject}))

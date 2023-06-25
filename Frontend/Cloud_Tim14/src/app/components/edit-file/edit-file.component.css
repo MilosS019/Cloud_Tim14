@@ -59,6 +59,16 @@ button {
   font-size: 16px;
 }
 
+.button{
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
 #close-edit-file{
   height: 50px;
   width: 50px;
