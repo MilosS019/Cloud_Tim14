@@ -29,7 +29,7 @@ export class InviterFamilyMemeberComponent {
       },
       (err) => {
         console.log(err);
-        alert(err.error.message);
+        alert(err.error);
       }
     );
   }

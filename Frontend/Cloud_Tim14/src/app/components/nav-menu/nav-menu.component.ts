@@ -43,7 +43,7 @@ export class NavMenuComponent {
       (response) => {
         console.log(response);
       },
-      (err) => alert(err.error.message)
+      (err) => alert(err.error)
     );
   }
 
@@ -65,19 +65,19 @@ export class NavMenuComponent {
   public goToVerifyFamilyMemberPage() {
     this.router.navigate(['verify-family-member']);
   }
-  
+
   public goToSharedFiles() {
     this.router.navigate(['shared-files']);
   }
 
-  public test(){
+  public test() {
     this.fileService.test().subscribe({
-      next: data=>{
+      next: (data) => {
         console.log(data);
       },
-      error: data=>{
+      error: (data) => {
         console.log(data);
-      }
+      },
     });
   }
 }

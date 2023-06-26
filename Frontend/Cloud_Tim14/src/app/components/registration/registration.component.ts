@@ -43,12 +43,12 @@ export class RegistrationComponent {
     this.user = {} as User;
     this.user.email = this.formGroup.value.email;
     this.user.password = this.formGroup.value.password;
-    this.user.name = this.formGroup.value.email;
+    this.user.name = this.formGroup.value.name;
     this.user.lastname = this.formGroup.value.lastname;
     this.user.birthday = this.formGroup.value.birthday;
 
     // console.log(this.user)
-    
+
     if (this.formGroup.controls['birthday'].invalid) {
       alert('Invalid date!');
       return;
@@ -78,7 +78,7 @@ export class RegistrationComponent {
           (response) => {},
           (err) => {
             alert(err.error);
-            console.log(err)
+            console.log(err);
           }
         );
         alert('You have successfully created account!');
