@@ -45,11 +45,12 @@ export class FileUploadComponent {
       return;
     }
     let tagsAsString = this.getTagsAsString(this.tags)
+    let today = new Date() 
     const fileInfoParams = {
         path: this.path + this.file.name,
         type: this.file.type,
         size: this.file.size,
-        lastModified: this.file.lastModified,
+        lastModified: today.toString(),
         description: this.description.value,
         tags: tagsAsString
       }

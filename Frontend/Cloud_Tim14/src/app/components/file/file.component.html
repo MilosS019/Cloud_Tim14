@@ -8,7 +8,6 @@
       <h3>{{ file.name }}</h3>
       <p>Type: {{ file.type }}</p>
       <p>Size: {{ file.size }} bytes</p>
-      <p>Creation Date: {{ file.creationDate }}</p>
       <p>Last Modified: {{ file.lastModifiedDate }}</p>
       <p>Description: {{ file.description }}</p>
       <p>Tags: {{ file.tags }}</p>
@@ -50,7 +49,7 @@
   </div>
 
   <div *ngIf="isEditFileDisplayed" id="edit-file">
-    <app-edit-file [path]="path" (updatedFile)="updateFileValues($event)" [file]="file" (close)="closeEditFile()"></app-edit-file>
+    <app-edit-file [path]="path" (updatedFile)="updateFileValues($event)" [file]="file" (close)="closeEditFile($event)"></app-edit-file>
   </div>
 
   <div *ngIf="isChangeAlbumFromDisplayed" style="margin-top: 5px">

@@ -32,7 +32,8 @@ def upload_file(event, contenxt):
 
     # # return a properly formatted JSON object
         message = 'Metadata uploaded succesfully'
-        return create_response(200, message)
+        file_name = path.split("/")[-1]
+        return create_response(200, {"email":email, "message": file_name + " uploaded successfully", "subject":"File upload"})
     
     except Exception as e:
         print(e)

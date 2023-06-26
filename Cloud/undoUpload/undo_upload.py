@@ -10,4 +10,4 @@ def undo_upload(event, contenxt):
     print(content)
     path = content["path"]
     s3.delete_object(Bucket="tim7-project-files-bucket", Key=path)
-    return create_response(500, "Meta data failed to upload, file upload has been declined")
+    return create_response(500, {"code":500, "message":"Meta data failed to upload, file upload has been declined"})

@@ -85,8 +85,10 @@ export class AlbumsComponent implements OnInit {
   }
 
   openDescription(file: any) {
+    console.log(this.currentpath + file[0])
     this.fileService.getMetaData(this.currentpath + file[0]).subscribe({
       next: data => {
+        console.log(data)
         let fileInfo: MyFile = {
           name: file[0],
           size: data.Item.size,
@@ -249,25 +251,25 @@ export class AlbumsComponent implements OnInit {
   moveFile(values:[string,string]){
     let albumName = values[0]
     let fileName = values[1]
-    let params = {"newPath":"", "oldPath":""}
     let fileParams: { oldPath: string; path: string; type: string; size: number; lastModified: string; description: string; tags: string; };
     if(albumName == ".."){
       let prevPath = this.pathHistory[this.pathHistory.length - 1]
       if(this.pathHistory[this.pathHistory.length - 1] == this.rootFolder)
         prevPath = ""
-      params = {"newPath": prevPath + "/" + fileName, "oldPath": this.currentpath + fileName}
-      fileParams = {
-        'oldPath':this.currentpath + fileName,
-        'path' : prevPath + "/" + fileName,
-        'type' : this.selectedFile.type,
-        'size' : this.selectedFile.size,
-        'lastModified' : this.selectedFile.lastModifiedDate,
-        'description' : this.selectedFile.description,
-        'tags' : this.getTagsAsString(this.selectedFile.tags)
-      } 
+        let today = new Date()
+        fileParams = {
+          'oldPath':this.currentpath + fileName,
+          'path' : prevPath + "/" + fileName,
+          'type' : this.selectedFile.type,
+          'size' : this.selectedFile.size,
+          'lastModified' : today.toString(),
+          'description' : this.selectedFile.description,
+          'tags' : this.getTagsAsString(this.selectedFile.tags)
+        } 
+        let params = {"newPath": prevPath + "/" + fileName, "oldPath": this.currentpath + fileName, "fileParams":fileParams}
+        this.startMoving(params)
     }
     else if(this.allFolders[this.currentAlbum].includes(albumName)){
-      params = {"newPath": this.currentpath + albumName + "/" + fileName, "oldPath": this.currentpath + fileName}
       fileParams = {
         'oldPath': this.currentpath + fileName,
         'path' : this.currentpath + albumName + "/" + fileName,
@@ -277,21 +279,28 @@ export class AlbumsComponent implements OnInit {
         'description' : this.selectedFile.description,
         'tags' : this.getTagsAsString(this.selectedFile.tags)
       }
+      let params = {"newPath": this.currentpath + albumName + "/" + fileName, "oldPath": this.currentpath + fileName, "fileParams":fileParams}
+      this.startMoving(params)
     }
+    else{
+      alert("Album must be visible")
+    }
+  }
+
+  startMoving(params:any){
     if(params["newPath"] != ""){
-      this.fileService.moveFile(params).subscribe({
-        next: data => {
-          console.log(data)
-          this.fileService.renameMetaData(fileParams).subscribe({
+      this.fileService.getLogedInEmail().subscribe({
+        next: data=> {
+          params["email"] = data["email"]
+          this.fileService.moveFile(params).subscribe({
             next: data => {
+              this.updateVisual(this.currentAlbum)
+            },
+            error: data => {
               console.log(data)
-            }
+            } 
           })
-          this.updateVisual(this.currentAlbum)
-        },
-        error: data => {
-          console.log(data)
-        } 
+        }
       })
     }
     else

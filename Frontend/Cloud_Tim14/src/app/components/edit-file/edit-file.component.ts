@@ -18,7 +18,7 @@ export class EditFileComponent implements OnInit {
   tags: Array<string> = [];
   @Input() path : string = "";
   @Input() file: MyFile = {} as MyFile;
-  @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() close: EventEmitter<MyFile> = new EventEmitter<MyFile>();
   @Output() updatedFile: EventEmitter<MyFile> = new EventEmitter();
 
   ngOnInit() {
@@ -53,9 +53,10 @@ export class EditFileComponent implements OnInit {
 
   updateFile(): void {
     if(this.formGroup.value.fileName == this.file.name){
+      let today = new Date()
       const fileInfoParams = JSON.stringify({
         path: this.path + this.file.name,
-        lastModified: Date.now(),
+        lastModified: today.toString(),
         description: this.formGroup.value.description,
         tags: this.getTagsAsString(this.tags)
       })
@@ -63,6 +64,12 @@ export class EditFileComponent implements OnInit {
       this.fileService.updateMetaData(fileInfoParams).subscribe({
         next: data => {
           console.log(data)
+          console.log(this.tags)
+          this.file.name = this.formGroup.value.fileName
+          this.file.description = this.formGroup.value.description
+          this.file.lastModifiedDate = today.toString()
+          this.file.tags = this.tags
+          this.close.emit(this.file)
         },
         error: data=> {
           console.log(data)
@@ -70,24 +77,38 @@ export class EditFileComponent implements OnInit {
       });
     }
     else{
-      const fileInfoParams = JSON.stringify({
+      let today = new Date()
+      const fileInfoParams = {
         oldPath: this.path + this.file.name, 
         path: this.path + this.formGroup.value.fileName,
         type: this.file.type,
         size: this.file.size,
-        lastModified: Date.now(),
+        lastModified: today.toString(),
         description: this.formGroup.value.description,
         tags: this.getTagsAsString(this.tags)
-      })
-      this.fileService.moveFile({"oldPath":this.path + this.file.name, "newPath":this.path + this.formGroup.value.fileName}).subscribe({
+      }
+      console.log(this.tags)
+      this.fileService.getLogedInEmail().subscribe({
         next: data => {
-          this.renameMetaData(fileInfoParams)
-          this.updateFileValues()
-        },
-        error: data=>{
-          
+          this.fileService.moveFile({"oldPath":this.path + this.file.name, "newPath":this.path + this.formGroup.value.fileName, "email":data["email"], "fileParams":fileInfoParams}).subscribe({
+            next: data => {
+              console.log(data)
+              this.file.name = this.formGroup.value.fileName
+              this.file.description = this.formGroup.value.description
+              this.file.lastModifiedDate = today.toString()
+              this.file.tags = this.tags
+              this.close.emit(this.file)
+              this.updateFileValues()
+            },
+            error: data=>{
+              console.log(data)
+              this.close.emit(this.file)
+            }
+          })
         }
       })
+
+
     }
   }
 
@@ -96,17 +117,6 @@ export class EditFileComponent implements OnInit {
     this.file.description = this.formGroup.value.description
     this.file.tags = this.tags
     this.updatedFile.emit(this.file)
-  }
-
-  renameMetaData(fileInfoParams: any){
-    this.fileService.renameMetaData(fileInfoParams).subscribe({
-      next: data => {
-        
-      },
-      error: data => {
-
-      }
-    })
   }
 
   removeTag(index: number) {

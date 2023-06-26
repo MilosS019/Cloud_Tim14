@@ -330,18 +330,6 @@ functions:
       # Include 'registerUser' directory and all child directories
       include: "renameMetaData/**"
     # Specifies events that trigger the Lambda function
-    events:
-      # REST API endpoint of API Gateway
-      - http:
-          # Path for this endpoint
-          path: rename-metadata
-          # HTTP method for this endpoint
-          method: put
-          # Enable CORS. Don't forget to return the right header in your response
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId: { Ref: MyApiGatewayAuthorizer }
     
   updateMetaData:
     handler: updateMetaData/update_metadata.update_metadata
@@ -416,19 +404,6 @@ functions:
       # Include 'registerUser' directory and all child directories
       include: "moveFile/**"
     # Specifies events that trigger the Lambda function
-    events:
-      # REST API endpoint of API Gateway
-      - http:
-          # Path for this endpoint
-          path: move-file
-          # HTTP method for this endpoint
-          method: put
-          # Enable CORS. Don't forget to return the right header in your response
-          cors: true
-
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId: { Ref: MyApiGatewayAuthorizer }
 
   
   removeFile:
@@ -613,7 +588,16 @@ functions:
     handler: undoUpload/undo_upload.undo_upload
     package:
       include: "undoUpload/**" 
+  
+  undoMoving:
+    handler: undoMoving/undo_moving.undo_moving
+    package:
+      include: "undoMoving/**" 
 
+  sendToSqs:
+    handler: sendToSqs/send_to_sqs.send_to_sqs
+    package:
+      include: "sendToSqs/**" 
 
 stepFunctions:
   stateMachines:
@@ -642,12 +626,60 @@ stepFunctions:
             Catch:
             - ErrorEquals: ["States.ALL"]
               Next: undoUpload
+            Next: sendToSqs
+
+          sendToSqs:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [sendToSqs, Arn]
             End: true
           
           undoUpload:
             Type: Task
             Resource:
               Fn::GetAtt: [undoUpload, Arn]
+            ResultPath: "$.undoUploadResult"
+            End: true
+            
+    fileRenameStateMachine:
+      events:
+        - http:
+            path: move-file
+            method: put
+            cors: true
+            authorizer:
+              type: COGNITO_USER_POOLS
+              authorizerId: { Ref: MyApiGatewayAuthorizer }
+      definition:
+        StartAt: moveFile
+        States:
+          moveFile:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [moveFile, Arn]
+            Next: renameMetaData
+          
+          renameMetaData:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [renameMetaData, Arn]
+            Catch:
+            - ErrorEquals: ["States.ALL"]
+              Next: undoMoving
+            Next: sendToSqs
+
+          sendToSqs:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [sendToSqs, Arn]
+            End: true
+          
+          undoMoving:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [undoMoving, Arn]
+            ResultPath: "$.undoUploadResult"
+            OutputPath: "$.Payload"
             End: true
 
     testnaStateMasina:

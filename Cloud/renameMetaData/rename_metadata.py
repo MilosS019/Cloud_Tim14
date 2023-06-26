@@ -7,23 +7,25 @@ from utility.utils import sendToSqs
 def rename_metadata(event, contenxt):
     try:
         dynamodb = boto3.resource('dynamodb')
-        email = event['requestContext']['authorizer']['claims']['email']
 
         table = dynamodb.Table('meta-data')
 
         body = json.loads(event['body'])
+        print(body)
+        email = body["email"]
 
         oldPath = body['oldPath']
-        path = body['path']
-        type = body['type']
-        size = body['size']
-        lastModified = body['lastModified']
-        description = body['description']
-        tags = body['tags']
+        newPath = body['newPath']
+        fileParams = body['fileParams']
+        type = fileParams['type']
+        size = fileParams['size']
+        lastModified = fileParams['lastModified']
+        description = fileParams['description']
+        tags = fileParams['tags']
         #<-- dodaj tags -->
         table.put_item(
             Item={
-                'emailAndName': email + path,
+                'emailAndName': newPath,
                 'type': type,
                 'size': size,
                 'lastModified': lastModified,
@@ -33,19 +35,15 @@ def rename_metadata(event, contenxt):
         
         table.delete_item(
             Key = {
-                'emailAndName' : email + oldPath
+                'emailAndName' : oldPath
             }
         )
 
     # # return a properly formatted JSON object
-        message = 'Metadata uploaded succesfully'
 
-        oldName = oldPath.split("/")[-1]
-        newName = path.split("/")[-1]
-        sendToSqs(email, oldName + " renamed succesfully to " + newName, email)
         
-        return create_response(200, message)
+        return create_response(200, {"email":email, "message":oldPath + " moved to " + newPath, "subject": "File edit"})
     
     except Exception as e:
         print(e)
-        return create_response(500, e)
+        raise Exception({"oldPath": body["oldPath"], "newPath":body["newPath"]})

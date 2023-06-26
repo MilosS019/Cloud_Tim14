@@ -83,7 +83,8 @@ export class FileComponent {
     this.isEditFileDisplayed = true;
   }
 
-  closeEditFile(){
+  closeEditFile(file:MyFile){
+    this.file = file
     this.isEditFileDisplayed = false;
   }
 
