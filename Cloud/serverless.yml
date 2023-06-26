@@ -599,6 +599,11 @@ functions:
     package:
       include: "sendToSqs/**" 
 
+  updateSharedMetaData:
+    handler: updateSharedMetaData/update_shared_meta_data.update_shared_meta_data
+    package:
+      include: "updateSharedMetaData/**" 
+
 stepFunctions:
   stateMachines:
     fileUploadStateMachine:
@@ -666,6 +671,12 @@ stepFunctions:
             Catch:
             - ErrorEquals: ["States.ALL"]
               Next: undoMoving
+            Next: updateSharedMetaData
+
+          updateSharedMetaData:
+            Type: Task
+            Resource:  
+              Fn::GetAtt: [updateSharedMetaData, Arn]
             Next: sendToSqs
 
           sendToSqs:

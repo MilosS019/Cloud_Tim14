@@ -315,12 +315,30 @@ export class AlbumsComponent implements OnInit {
   deleteAlbum(album:PhotoAlbum){
     this.fileService.deleteAlbum(this.currentpath + album.name + "/").subscribe({
       next: data=> {
-        console.log(data)
+        // console.log(data)
+        console.log(this.allFolders)
+        console.log(album.name)
+        delete this.allFolders[album.name]
+        let albums = this.allFolders[this.currentAlbum]
+        let index = this.findAlbumIndex(albums, album.name)
+        console.log(index)
+        this.allFolders[this.currentAlbum].splice(index,index + 1)
+        console.log(this.allFolders)
         this.updateVisual(this.currentAlbum)
       },
       error: data => {
         console.log(data)
       }
     })
+  }
+
+  findAlbumIndex(albums:any, albumName:string){
+    let counter = 0
+    for(let album of albums){
+      if(album == albumName)
+        return counter
+      counter += 1
+    }
+    return counter
   }
 }

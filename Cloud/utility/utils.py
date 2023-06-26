@@ -1,6 +1,8 @@
 import json
 import boto3
 from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Attr
+    
 
 
 def create_response(status, body, contentType=""):
@@ -117,3 +119,24 @@ def sendToSqs(receiver, message, subject):
     response = sqs.get_queue_url(QueueName="notificationQueue")
     queue_url = response['QueueUrl']
     sqs.send_message(QueueUrl = queue_url, MessageBody = json.dumps({"receiver":receiver,"message": message, "subject": subject}))
+
+
+def deleteSharedInformation(dynamodb, granted_by_user, file_path):
+    print(granted_by_user, file_path)
+    response = dynamodb.scan(
+        FilterExpression=Attr('granted_by_user').eq(granted_by_user) and Attr('file_path').eq(file_path),
+    )
+
+    print(response)
+    granted_user = ""
+
+    for item in response["Items"]:
+        key = {
+            "granted_user": item["granted_user"],
+            "file_path":item["file_path"]
+        }
+        dynamodb.delete_item(
+            Key = key
+        )
+        granted_user = item["granted_user"]
+    return granted_user

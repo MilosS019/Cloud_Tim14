@@ -1,12 +1,14 @@
 import json
 import boto3
 from utility.utils import create_response
+from utility.utils import deleteSharedInformation
 
 def remove_folder(event, context):
     try:
         s3 = boto3.client('s3')
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table('meta-data')
+        filePermissions = dynamodb.Table('file-permissions')
 
         body = json.loads(event['body']) 
         path = body["path"]
@@ -26,6 +28,8 @@ def remove_folder(event, context):
                         'emailAndName' : key,
                     }
                 )
+            print(email, key)
+            deleteSharedInformation(filePermissions, email, key)
         
         return create_response(200, "Deleted succsefully")
     

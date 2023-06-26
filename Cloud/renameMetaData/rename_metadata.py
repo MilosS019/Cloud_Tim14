@@ -2,6 +2,7 @@ import json
 import boto3
 from utility.utils import create_response
 from utility.utils import sendToSqs
+from utility.utils import deleteSharedInformation
 
 
 def rename_metadata(event, contenxt):
@@ -39,10 +40,7 @@ def rename_metadata(event, contenxt):
             }
         )
 
-    # # return a properly formatted JSON object
-
-        
-        return create_response(200, {"email":email, "message":oldPath + " moved to " + newPath, "subject": "File edit"})
+        return create_response(200, {"newPath":newPath, "oldPath":oldPath, "email":email})        
     
     except Exception as e:
         print(e)
