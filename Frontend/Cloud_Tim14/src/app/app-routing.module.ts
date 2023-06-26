@@ -12,6 +12,7 @@ import { EditFileComponent } from './components/edit-file/edit-file.component';
 import { InviterFamilyMemeberComponent } from './components/inviter-family-memeber/inviter-family-memeber.component';
 import { VerifyFamilyMemberDataComponent } from './components/verify-family-member-data/verify-family-member-data.component';
 import { RegisterFamilyMemberComponent } from './components/register-family-member/register-family-member.component';
+import { SharedFilesComponent } from './components/shared-files/shared-files.component';
 
 const routes: Routes = [
   {
@@ -54,7 +55,11 @@ const routes: Routes = [
     component: InviterFamilyMemeberComponent,
     canActivate: [AuthorizedGuard],
   },
-
+  {
+    path: 'shared-files',
+    component: SharedFilesComponent,
+    canActivate: [AuthorizedGuard],
+  },
   {
     path: 'verify-family-member',
     component: VerifyFamilyMemberDataComponent,

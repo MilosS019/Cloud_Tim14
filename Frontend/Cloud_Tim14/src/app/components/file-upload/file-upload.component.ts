@@ -31,23 +31,39 @@ export class FileUploadComponent {
         this.fileName = this.file.name
     }
 
+  getTagsAsString(tags:string[]){
+    let tagsAsStr = ""
+    for(let tag of tags){
+      tagsAsStr += "," + tag
+    }
+    return tagsAsStr.slice(1, tagsAsStr.length)
+  }
+
   async upload(){
     if (!this.file){
       alert("file not selected")
       return;
     }
-    const fileInfoParams = JSON.stringify({
+    let tagsAsString = this.getTagsAsString(this.tags)
+    let today = new Date() 
+    const fileInfoParams = {
         path: this.path + this.file.name,
         type: this.file.type,
         size: this.file.size,
-        lastModified: this.file.lastModified,
+        lastModified: today.toString(),
         description: this.description.value,
-        tags: this.tags
-      })
-    console.log(this.path)
+        tags: tagsAsString
+      }
     const fileReader = new FileReader();
-    await this.setUpFileReader(fileReader, fileInfoParams) 
-    fileReader.readAsDataURL(this.file)
+    this.fileService.getLogedInEmail().subscribe({
+      next: async data => {
+        await this.setUpFileReader(fileReader, fileInfoParams, data["email"]) 
+        fileReader.readAsDataURL(this.file!)
+      },
+      error: data => {
+
+      }
+    })
     // const formData : FormData = new FormData;
     // formData.append('file', this.file)
     // formData.append('path', this.path)
@@ -66,26 +82,28 @@ export class FileUploadComponent {
 
   }
 
-  async setUpFileReader(fileReader:FileReader, fileInfoParams:any){
+  async setUpFileReader(fileReader:FileReader, fileInfoParams:any, email:string){
     fileReader.onload = () => {
       const fileData = fileReader.result;
-      console.log(fileData)
       const payload = {
         file: fileData,
-        path: this.path + this.file?.name
+        fileParams: fileInfoParams,
+        path: this.path + this.file?.name,
+        email:email
       };
     
       const jsonData = JSON.stringify(payload);
     
       this.fileService.uploadFile(jsonData).subscribe(
         data => {
-          this.fileService.uploadMetaData(fileInfoParams).subscribe(
-            data => {
-              console.log(data)
-              alert("File uploaded succsefully")
-              this.update();
-            }
-          );
+          // this.fileService.uploadMetaData(fileInfoParams).subscribe(
+          //   data => {
+          //     alert("File uploaded succsefully")
+          //     this.update();
+          //   }
+          // );
+          console.log(data)
+          this.update();
         }
       );
     };

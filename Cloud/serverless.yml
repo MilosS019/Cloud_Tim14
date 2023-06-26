@@ -86,6 +86,18 @@ provider:
 
     - Effect: Allow
       Action:
+        - sqs:SendMessage
+        - sqs:ReceiveMessage
+        - sqs:DeleteMessage
+        - sqs:PurgeQueue
+        - sqs:CreateQueue
+        - sqs:DeleteQueue
+        - sqs:GetQueueUrl
+      Resource:
+        - "Fn::GetAtt": [notificationQueue, Arn]
+
+    - Effect: Allow
+      Action:
         - s3:ListBucket
         - s3:GetObject
         - s3:GetObjectAcl
@@ -178,6 +190,25 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
 
+  getAllFiles:
+    handler: getAllFiles/get_all_files.get_all_files
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "getAllFiles/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: all-files
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
   downloadFiles:
     handler: fileDownload/download_file.download_file
     package:
@@ -216,19 +247,103 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
 
+  downloadShared:
+    handler: downloadShared/download_shared.download_shared
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "downloadShared/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: download-shared
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  getSharedMetaData:
+    handler: getSharedMetaData/get_shared_metadata.get_shared_metadata
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "getSharedMetaData/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: shared-metadata
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+
+  addPermission:
+    handler: addPermission/add_permission.add_permission
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "addPermission/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: file-permission  
+          # HTTP method for this endpoint
+          method: post
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+
+  sendNotification:
+    handler: sendNotification/send_notification.send_notification
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "sendNotification/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - sqs:
+          arn: "arn:aws:sqs:eu-central-1:841941972097:notificationQueue"
+
   uploadMetaData:
     handler: metaDataUpload/upload_meta_data.upload_file
     package:
       # Include 'registerUser' directory and all child directories
       include: "metaDataUpload/**"
     # Specifies events that trigger the Lambda function
+
+  renameMetaData:
+    handler: renameMetaData/rename_metadata.rename_metadata
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "renameMetaData/**"
+    # Specifies events that trigger the Lambda function
+    
+  updateMetaData:
+    handler: updateMetaData/update_metadata.update_metadata
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "updateMetaData/**"
+    # Specifies events that trigger the Lambda function
     events:
       # REST API endpoint of API Gateway
       - http:
           # Path for this endpoint
-          path: upload-metadata
+          path: update-metadata
           # HTTP method for this endpoint
-          method: post
+          method: put
           # Enable CORS. Don't forget to return the right header in your response
           cors: true
           authorizer:
@@ -241,11 +356,19 @@ functions:
       # Include 'registerUser' directory and all child directories
       include: "fileUpload/**"
     # Specifies events that trigger the Lambda function
+
+  
+  uploadFolder:
+    handler: uploadFolder/upload_folder.upload_folder
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "uploadFolder/**"
+    # Specifies events that trigger the Lambda function
     events:
       # REST API endpoint of API Gateway
       - http:
           # Path for this endpoint
-          path: upload-file
+          path: upload-folder
           # HTTP method for this endpoint
           method: post
           # Enable CORS. Don't forget to return the right header in your response
@@ -255,19 +378,94 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
 
-  addPermission:
-    handler: addViewPermission/add_view_permission.add_permission
+  renameFolder:
+    handler: renameFolder/rename_folder.rename_folder
     package:
-      include: "addViewPermission/**"
+      # Include 'registerUser' directory and all child directories
+      include: "renameFolder/**"
+    # Specifies events that trigger the Lambda function
     events:
+      # REST API endpoint of API Gateway
       - http:
-          path: file-permission
+          # Path for this endpoint
+          path: rename-folder
+          # HTTP method for this endpoint
           method: post
+          # Enable CORS. Don't forget to return the right header in your response
           cors: true
 
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  moveFile:
+    handler: moveFile/move_file.move_file
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "moveFile/**"
+    # Specifies events that trigger the Lambda function
+
+  
+  removeFile:
+    handler: removeFile/remove_file.remove_file
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "removeFile/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: remove-file
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  removeFolder:
+    handler: removeFolder/remove_folder.remove_folder
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "removeFolder/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: remove-folder
+          # HTTP method for this endpoint
+          method: put
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
+  getSharedFiles:
+    handler: getSharedFiles/get_shared_files.get_shared_files
+    package:
+      # Include 'registerUser' directory and all child directories
+      include: "getSharedFiles/**"
+    # Specifies events that trigger the Lambda function
+    events:
+      # REST API endpoint of API Gateway
+      - http:
+          # Path for this endpoint
+          path: get-shared-files
+          # HTTP method for this endpoint
+          method: get
+          # Enable CORS. Don't forget to return the right header in your response
+          cors: true
+
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+
 
   removePermission:
     handler: removeViewPermission/remove_view_permission.remove_permission
@@ -362,8 +560,177 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: { Ref: MyApiGatewayAuthorizer }
 
+  
+  getEmail:
+    handler: getEmail/get_email.get_email
+    package:
+      include: "getEmail/**"
+    events:
+      - http:
+          path: get-email
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: MyApiGatewayAuthorizer }
+  
+  testiramoStep:
+    handler: testiramoStep/testiramo_step.testiramo_step
+    package:
+      include: "testiramoStep/**"
+    
+  testiramoStep2:
+    handler: testiramoStep2/testiramo_step2.testiramo_step2
+    package:
+      include: "testiramoStep2/**" 
+
+  undoUpload:
+    handler: undoUpload/undo_upload.undo_upload
+    package:
+      include: "undoUpload/**" 
+  
+  undoMoving:
+    handler: undoMoving/undo_moving.undo_moving
+    package:
+      include: "undoMoving/**" 
+
+  sendToSqs:
+    handler: sendToSqs/send_to_sqs.send_to_sqs
+    package:
+      include: "sendToSqs/**" 
+
+  updateSharedMetaData:
+    handler: updateSharedMetaData/update_shared_meta_data.update_shared_meta_data
+    package:
+      include: "updateSharedMetaData/**" 
+
+stepFunctions:
+  stateMachines:
+    fileUploadStateMachine:
+      events:
+        - http:
+            path: upload-file
+            method: post
+            cors: true
+            authorizer:
+              type: COGNITO_USER_POOLS
+              authorizerId: { Ref: MyApiGatewayAuthorizer }
+      definition:
+        StartAt: uploadFile
+        States:
+          uploadFile:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [uploadFile, Arn]
+            Next: uploadMetaData
+          
+          uploadMetaData:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [uploadMetaData, Arn]
+            Catch:
+            - ErrorEquals: ["States.ALL"]
+              Next: undoUpload
+            Next: sendToSqs
+
+          sendToSqs:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [sendToSqs, Arn]
+            End: true
+          
+          undoUpload:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [undoUpload, Arn]
+            ResultPath: "$.undoUploadResult"
+            End: true
+            
+    fileRenameStateMachine:
+      events:
+        - http:
+            path: move-file
+            method: put
+            cors: true
+            authorizer:
+              type: COGNITO_USER_POOLS
+              authorizerId: { Ref: MyApiGatewayAuthorizer }
+      definition:
+        StartAt: moveFile
+        States:
+          moveFile:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [moveFile, Arn]
+            Next: renameMetaData
+          
+          renameMetaData:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [renameMetaData, Arn]
+            Catch:
+            - ErrorEquals: ["States.ALL"]
+              Next: undoMoving
+            Next: updateSharedMetaData
+
+          updateSharedMetaData:
+            Type: Task
+            Resource:  
+              Fn::GetAtt: [updateSharedMetaData, Arn]
+            Next: sendToSqs
+
+          sendToSqs:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [sendToSqs, Arn]
+            End: true
+          
+          undoMoving:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [undoMoving, Arn]
+            ResultPath: "$.undoUploadResult"
+            OutputPath: "$.Payload"
+            End: true
+
+    testnaStateMasina:
+      events:
+        - http:
+            path: step-test
+            method: post
+            cors: true
+            authorizer:
+              type: COGNITO_USER_POOLS
+              authorizerId: { Ref: MyApiGatewayAuthorizer }
+      definition:
+        StartAt: uploadFile
+        States:
+          uploadFile:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [uploadFile, Arn]
+            Next: uploadMetaData
+          
+          uploadMetaData:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [uploadMetaData, Arn]
+            End: true
+
+plugins:
+    - serverless-step-functions
+
 resources:
   Resources:
+    notificationQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: notificationQueue
+        VisibilityTimeout: 300
+        DelaySeconds: 0
+        MaximumMessageSize: 262144
+        ReceiveMessageWaitTimeSeconds: 20
+
     userTable:
       Type: AWS::DynamoDB::Table
       Properties:

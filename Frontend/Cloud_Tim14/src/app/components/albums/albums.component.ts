@@ -10,29 +10,38 @@ import { MyFile } from 'src/app/models/myFile.model';
 })
 export class AlbumsComponent implements OnInit {
   albums: Array<PhotoAlbum> = [];
+  sharedAlbums: Array<PhotoAlbum> = [];
+  
   files: any = [];
+  sharedFiles: any = [];
+
+  showFileInformationDialogReadOnly = false;
   showFolderCreationDialog = false;
   showFileInformationDialog = false;
   showUploadFileDialog = false;
   currentpath: string = '/';
   allFolders: any;
   foldersSize: any;
-  pathHistory: Array<string> = [];
-  currentAlbum = '';
-
-  @Output() selectedFile!: MyFile;
-  constructor(private fileService: FileService) {}
+  pathHistory: Array<string> = []
+  currentAlbum = ""
+  rootFolder:string = ""
+  
+  @Output() selectedFile!:MyFile;
+  constructor(private fileService:FileService) {
+  }
 
   ngOnInit() {
+    this.getFolders();
+  }
+
+  getFolders(){
     this.fileService.getFolders().subscribe({
       next: (data) => {
-        let rootFolder = data['folders']['SignedUserEmail'];
-        this.currentAlbum = rootFolder;
+        this.rootFolder = data['folders']['SignedUserEmail'];
+        this.currentAlbum = this.rootFolder;
         this.allFolders = data['folders'];
         this.foldersSize = data['folders_size'];
-        this.pathHistory.push(rootFolder);
-        console.log(data);
-        for (let folder of data['folders'][rootFolder]) {
+        for (let folder of data['folders'][this.rootFolder]) {
           let album: PhotoAlbum = {
             name: folder,
             numberOfFiles: data['folders_size'][folder],
@@ -62,13 +71,24 @@ export class AlbumsComponent implements OnInit {
       let album: PhotoAlbum = { name: albumName, numberOfFiles: 0 };
       this.albums.push(album);
     }
+    this.allFolders[this.currentAlbum].push(albumName)
+    this.allFolders[albumName] = []
     this.showFolderCreationDialog = false;
   }
 
+  getTagsAsArray(tags:string){
+    let tagsArr = []
+    for(let tag of tags.split(",")){
+      tagsArr.push(tag)
+    }
+    return tagsArr
+  }
+
   openDescription(file: any) {
+    console.log(this.currentpath + file[0])
     this.fileService.getMetaData(this.currentpath + file[0]).subscribe({
-      next: (data) => {
-        console.log(data);
+      next: data => {
+        console.log(data)
         let fileInfo: MyFile = {
           name: file[0],
           size: data.Item.size,
@@ -76,7 +96,7 @@ export class AlbumsComponent implements OnInit {
           lastModifiedDate: data.Item.lastModified,
           type: data.Item.type,
           description: data.Item.description,
-          tags: [],
+          tags: this.getTagsAsArray(data.Item.tags),
         };
         this.selectedFile = fileInfo;
         this.showFileInformationDialog = true;
@@ -89,9 +109,8 @@ export class AlbumsComponent implements OnInit {
     this.showFileInformationDialog = false;
   }
 
-  closeFileUploadDialog(fileName: string) {
-    this.files.push([fileName, fileName.split('.')[1]]);
-    console.log(this.files);
+  closeFileUploadDialog(fileName:string){
+    this.files.push([fileName, fileName.split(".")[1]])
     this.showUploadFileDialog = false;
   }
 
@@ -108,6 +127,7 @@ export class AlbumsComponent implements OnInit {
     }
     this.fileService.getFiles(this.currentpath).subscribe({
       next: (data) => {
+        console.log(data)
         for (let file of data) {
           let file_path = file.split('/');
           let file_name = file_path[file_path.length - 1];
@@ -130,13 +150,16 @@ export class AlbumsComponent implements OnInit {
     this.updateVisual(albumName);
   }
 
+  
   goBack() {
     if (this.pathHistory.length == 0) return;
     this.currentAlbum = this.pathHistory.pop()!;
     let indexOfSlash = this.currentpath.lastIndexOf('/');
     this.currentpath = this.currentpath.slice(0, indexOfSlash);
     indexOfSlash = this.currentpath.lastIndexOf('/');
-    this.currentpath = this.currentpath.slice(0, indexOfSlash + 1);
+    this.currentpath = this.currentpath.slice(0, indexOfSlash + 1 );
+    
+    console.log(this.currentpath)
     this.updateVisual(this.currentAlbum);
   }
 
@@ -180,13 +203,142 @@ export class AlbumsComponent implements OnInit {
     else return new Blob([response], { type: 'application/octet-stream' });
   }
 
-  download(fileName: string) {
-    console.log(this.currentpath + fileName);
+  download(fileName:string){
     this.fileService.downloadFiles(this.currentpath + fileName).subscribe({
       next: (data) => {
         this.handleFileDownload(data, fileName);
       },
       error: (data) => {},
     });
+  }
+
+  close(){
+    this.showUploadFileDialog = false;
+  }
+
+  rename(oldAndNewFolderName:any, album: PhotoAlbum){
+    this.allFolders[oldAndNewFolderName[1]] = this.allFolders[oldAndNewFolderName[0]]
+    delete this.allFolders[oldAndNewFolderName[0]]
+    album.name = oldAndNewFolderName[1]
+
+    console.log(oldAndNewFolderName[0])
+
+    let index = this.allFolders[this.currentAlbum].findIndex((element: any) => element == oldAndNewFolderName[0])
+    this.allFolders[this.currentAlbum][index] = oldAndNewFolderName[1]
+
+    let old_path = this.currentpath + oldAndNewFolderName[0] + "/";
+    let new_path = this.currentpath + oldAndNewFolderName[1] + "/";
+    console.log(old_path)
+    console.log(new_path)
+    this.fileService.renameFolder({"oldPath":old_path, "newPath": new_path}).subscribe({
+      next: data => {
+        console.log(data)
+      },
+      error: data => {
+        console.log(data)
+      }
+    })
+  }
+
+  getTagsAsString(tags:string[]){
+    let tagsAsStr = ""
+    for(let tag of tags){
+      tagsAsStr += "," + tag
+    }
+    return tagsAsStr.slice(1, tagsAsStr.length)
+  }
+
+  moveFile(values:[string,string]){
+    let albumName = values[0]
+    let fileName = values[1]
+    let fileParams: { oldPath: string; path: string; type: string; size: number; lastModified: string; description: string; tags: string; };
+    if(albumName == ".."){
+      let prevPath = this.pathHistory[this.pathHistory.length - 1]
+      if(this.pathHistory[this.pathHistory.length - 1] == this.rootFolder)
+        prevPath = ""
+        let today = new Date()
+        fileParams = {
+          'oldPath':this.currentpath + fileName,
+          'path' : prevPath + "/" + fileName,
+          'type' : this.selectedFile.type,
+          'size' : this.selectedFile.size,
+          'lastModified' : today.toString(),
+          'description' : this.selectedFile.description,
+          'tags' : this.getTagsAsString(this.selectedFile.tags)
+        } 
+        let params = {"newPath": prevPath + "/" + fileName, "oldPath": this.currentpath + fileName, "fileParams":fileParams}
+        this.startMoving(params)
+    }
+    else if(this.allFolders[this.currentAlbum].includes(albumName)){
+      fileParams = {
+        'oldPath': this.currentpath + fileName,
+        'path' : this.currentpath + albumName + "/" + fileName,
+        'type' : this.selectedFile.type,
+        'size' : this.selectedFile.size,
+        'lastModified' : this.selectedFile.lastModifiedDate,
+        'description' : this.selectedFile.description,
+        'tags' : this.getTagsAsString(this.selectedFile.tags)
+      }
+      let params = {"newPath": this.currentpath + albumName + "/" + fileName, "oldPath": this.currentpath + fileName, "fileParams":fileParams}
+      this.startMoving(params)
+    }
+    else{
+      alert("Album must be visible")
+    }
+  }
+
+  startMoving(params:any){
+    if(params["newPath"] != ""){
+      this.fileService.getLogedInEmail().subscribe({
+        next: data=> {
+          params["email"] = data["email"]
+          this.fileService.moveFile(params).subscribe({
+            next: data => {
+              this.updateVisual(this.currentAlbum)
+            },
+            error: data => {
+              console.log(data)
+            } 
+          })
+        }
+      })
+    }
+    else
+      alert("This is not an existing folder")
+  }
+
+  moveMetaData(albumName:string){
+    let oldPath = this.selectedFile.name;
+    this.selectedFile
+  }
+
+  deleteAlbum(album:PhotoAlbum){
+    this.fileService.deleteAlbum(this.currentpath + album.name + "/").subscribe({
+      next: data=> {
+        // console.log(data)
+        console.log(this.allFolders)
+        console.log(album.name)
+        delete this.allFolders[album.name]
+        let albums = this.allFolders[this.currentAlbum]
+        let index = this.findAlbumIndex(albums, album.name)
+        console.log(index)
+        this.allFolders[this.currentAlbum].splice(index,index + 1)
+        console.log(this.allFolders)
+        this.updateVisual(this.currentAlbum)
+      },
+      error: data => {
+        console.log(data)
+      }
+    })
+  }
+
+  findAlbumIndex(albums:any, albumName:string){
+    let counter = 0
+    for(let album of albums){
+      if(album == albumName)
+        return counter
+      counter += 1
+    }
+    return counter
   }
 }

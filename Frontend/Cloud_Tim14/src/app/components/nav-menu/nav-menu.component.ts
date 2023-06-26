@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { UsersService } from '../../services/users.service';
 import { PermissionService } from '../../services/permission.service';
 import { User } from '../../models/user.model';
+import { FileService } from 'src/app/services/file.service';
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
@@ -14,7 +15,8 @@ export class NavMenuComponent {
     private cognitoService: CognitoService,
     private router: Router,
     private usersService: UsersService,
-    private permissionService: PermissionService
+    private permissionService: PermissionService,
+    private fileService: FileService
   ) {}
 
   public isAuthenticated(): boolean {
@@ -62,5 +64,20 @@ export class NavMenuComponent {
 
   public goToVerifyFamilyMemberPage() {
     this.router.navigate(['verify-family-member']);
+  }
+  
+  public goToSharedFiles() {
+    this.router.navigate(['shared-files']);
+  }
+
+  public test(){
+    this.fileService.test().subscribe({
+      next: data=>{
+        console.log(data);
+      },
+      error: data=>{
+        console.log(data);
+      }
+    });
   }
 }

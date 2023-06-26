@@ -1,0 +1,31 @@
+<div class="albums-container">
+    <div *ngFor="let album of sharedAlbums">
+      <app-album [isReadOnly]="true" (albumOpening)="changeSharedFolder($event)" [album]="album"></app-album>
+    </div>
+  </div>
+  
+  <h1>Shared files</h1>
+  <div *ngFor="let file of sharedFiles" (click) = "openDescriptionReadOnly(file)" class = "files"> 
+    <div class="file"  *ngIf="file[1] == 'txt' || file[1] == 'png' || file[1] == 'jpg'">
+      <img src = "../../../assets/images/txt.png" *ngIf="file[1] == 'txt'" class="txt">
+      
+      <img src = "../../../assets/images/img.png" *ngIf="file[1] == 'jpg'" class="img">
+      
+      <img src = "../../../assets/images/img.png" *ngIf="file[1] == 'png'" class="img">
+      <p>{{file[0]}}</p>
+    </div>
+  
+    <div class="file" *ngIf="file[1] != 'txt' && file[1] != 'png' && file[1] != 'jpg'">
+      <img src = "../../../assets/images/file.png" class="img">
+      <p>{{file[0]}}</p>
+    </div>
+  </div>
+  
+  
+  <div class="file-information" *ngIf="showFileInformationDialogReadOnly">
+    <app-file [isReadOnly]="true" (download)="download($event)" (closing)="closeFileInformation()" [file]="selectedFile"></app-file>
+  </div>
+  
+  <div id="back" (click)="goBack()">
+    <img src="../../../assets/images/back.png" alt="back">
+  </div>

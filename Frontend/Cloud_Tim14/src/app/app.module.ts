@@ -20,10 +20,12 @@ import { FileEditComponent } from './components/file-edit/file-edit.component';
 import { EditFileComponent } from './components/edit-file/edit-file.component';
 import { CreateAlbumsComponent } from './components/create-albums/create-albums.component';
 import { FileDetailsComponent } from './components/file-details/file-details.component';
+import { AreYouSureDialogComponent } from './components/are-you-sure-dialog/are-you-sure-dialog.component';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { InviterFamilyMemeberComponent } from './components/inviter-family-memeber/inviter-family-memeber.component';
 import { RegisterFamilyMemberComponent } from './components/register-family-member/register-family-member.component';
 import { VerifyFamilyMemberDataComponent } from './components/verify-family-member-data/verify-family-member-data.component';
+import { SharedFilesComponent } from './components/shared-files/shared-files.component';
 
 @NgModule({
   declarations: [
@@ -41,9 +43,11 @@ import { VerifyFamilyMemberDataComponent } from './components/verify-family-memb
     EditFileComponent,
     CreateAlbumsComponent,
     FileDetailsComponent,
+    AreYouSureDialogComponent,
     InviterFamilyMemeberComponent,
     RegisterFamilyMemberComponent,
     VerifyFamilyMemberDataComponent,
+    SharedFilesComponent,
   ],
   imports: [
     BrowserModule,

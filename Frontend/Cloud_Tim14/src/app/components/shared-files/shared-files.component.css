@@ -1,0 +1,112 @@
+:host{
+    text-align: center;
+  }
+  
+  .albums-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  
+  #add-albums{
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translate(-50%,0);
+    cursor: pointer;
+    z-index: 2;
+  }
+  
+  #add-albums img{
+    width: 50px;
+    margin-left: 30px;
+  }
+  
+  #footer{
+    position: fixed;
+    bottom: 0px;
+    width: 100vw;
+    height: 80px;
+    background-color: white;
+    z-index: 1;
+  }
+  
+  .files{
+    text-align: center;
+    display: flex;
+    align-items: center;
+    display: inline-block;
+    margin: 15px;
+    margin-bottom: 80px;
+  }
+  
+  .files img{
+    width: 60px;
+  }
+  
+  .file{
+    width: auto;
+    display: inline-block;
+    cursor: pointer;
+  }
+  
+  p{
+    padding: 0px;
+    margin: 3px;
+  } 
+  
+  .file-upload{
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.3);
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+  
+  .file-upload-dialog{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .file-information{
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+  }
+  
+  #back{
+    position: fixed;
+    height: 60px;
+    width: 60px;
+    left: 10px;
+    top: 50px;
+  }
+  
+  #back img{
+    cursor: pointer;
+    height: 60px;
+    width: 60px;
+  }
+  
+  .close{
+    position: fixed;
+    top: 50px;
+    right: 10px;
+  }
+  
+  .close img{
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+  }

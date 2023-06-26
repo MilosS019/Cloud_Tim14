@@ -8,18 +8,17 @@
       <h3>{{ file.name }}</h3>
       <p>Type: {{ file.type }}</p>
       <p>Size: {{ file.size }} bytes</p>
-      <p>Creation Date: {{ file.creationDate }}</p>
       <p>Last Modified: {{ file.lastModifiedDate }}</p>
       <p>Description: {{ file.description }}</p>
       <p>Tags: {{ file.tags }}</p>
     </div>
     <div class="file-actions">
-      <i (click)="openShareFileForm()" class="fas fa-share"></i>
-      <i (click)="openRemoveSharingFileForm()" class="fas fa-unlink"></i>
-      <i (click)="editFile()" class="fas fa-edit"></i>
+      <i *ngIf="!isReadOnly" (click)="openShareFileForm()" class="fas fa-share"></i>
+      <i *ngIf="!isReadOnly" (click)="openRemoveSharingFileForm()" class="fas fa-unlink"></i>
+      <i *ngIf="!isReadOnly" (click)="editFile()" class="fas fa-edit"></i>
       <i (click)="downloadFile()" class="fa fa-download"></i>
-      <i (click)="openChangeAlbumForm()" class="fa fa-arrow-right"></i>
-      <i (click)="deleteFile()" class="fa fa-trash"></i>
+      <i *ngIf="!isReadOnly" (click)="openChangeAlbumForm()" class="fa fa-arrow-right"></i>
+      <i *ngIf="!isReadOnly" (click)="openAreYouSureDialog()" class="fa fa-trash"></i>
     </div>
   </div>
 
@@ -49,6 +48,10 @@
     </form>
   </div>
 
+  <div *ngIf="isEditFileDisplayed" id="edit-file">
+    <app-edit-file [path]="path" (updatedFile)="updateFileValues($event)" [file]="file" (close)="closeEditFile($event)"></app-edit-file>
+  </div>
+
   <div *ngIf="isChangeAlbumFromDisplayed" style="margin-top: 5px">
     <form [formGroup]="changeAlbumFormGroup" (ngSubmit)="changeAlbum()">
       <input
@@ -60,6 +63,10 @@
       <button (click)="closeChangeAlbumForm()">Close</button>
     </form>
   </div>
+</div>
+
+<div class="are-you-sure" *ngIf = "isAreYouSureDialogDisplayed">
+  <app-are-you-sure-dialog (no)="closeAreYouSureDialog()" (yes)="deleteFile()"></app-are-you-sure-dialog>
 </div>
 
 <div class="close" (click)="close()">

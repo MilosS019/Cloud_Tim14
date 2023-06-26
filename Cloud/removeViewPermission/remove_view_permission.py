@@ -18,6 +18,7 @@ def remove_permission(event, context):
         request_body = json.loads(event['body'])
 
         logged_user_email = get_logged_user_email(event)
+        request_body["file_path"] = logged_user_email + request_body["file_path"]
 
         _is_request_valid(request_body)
         _is_granted_user_exist(request_body)

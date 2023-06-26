@@ -1,0 +1,27 @@
+#container{
+    width: 300px;
+    height: 150px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    border: 1px solid black;
+    background-color: white;
+}
+
+#container p{ 
+    padding: 10px;
+}
+
+.button{
+  margin: 10px;
+  border: 1px solid black;
+  cursor: pointer;
+}
+
+#grid{
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 20px;
+}
