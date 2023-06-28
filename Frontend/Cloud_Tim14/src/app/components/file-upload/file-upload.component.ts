@@ -50,6 +50,7 @@ export class FileUploadComponent {
         path: this.path + this.file.name,
         type: this.file.type,
         size: this.file.size,
+        creationDate: today.toString(), 
         lastModified: today.toString(),
         description: this.description.value,
         tags: tagsAsString

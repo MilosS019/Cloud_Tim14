@@ -17,18 +17,13 @@ import { SharedFilesComponent } from './components/shared-files/shared-files.com
 const routes: Routes = [
   {
     path: '',
-    component: LoginComponent,
+    component: AlbumsComponent,
     canActivate: [NotAuthorizedGuard],
   },
   {
     path: 'create-account',
     component: RegistrationComponent,
     canActivate: [NotAuthorizedGuard],
-  },
-  {
-    path: 'file-upload',
-    component: FileUploadComponent,
-    canActivate: [AuthorizedGuard],
   },
   {
     path: 'files',

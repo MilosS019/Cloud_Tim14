@@ -113,8 +113,12 @@ export class SharedFilesComponent implements OnInit{
   }
 
   goBack(){
+    if(this.pathHistory.length == 0)
+      return
+    console.log(this.pathHistory)
     if(this.pathHistory.length == 1){
       this.getSharedFolders()
+      this.pathHistory.pop()
     }
     else
       this.currentAlbum = this.pathHistory.pop()!

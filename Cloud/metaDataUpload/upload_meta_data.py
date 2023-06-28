@@ -16,6 +16,7 @@ def upload_file(event, contenxt):
         type = fileParams['type']
         size = fileParams['size']
         lastModified = fileParams['lastModified']
+        creationDate = fileParams['creationDate']
         description = fileParams['description']
         tags = fileParams['tags']
         #<-- dodaj tags -->
@@ -25,6 +26,7 @@ def upload_file(event, contenxt):
                 'type': type,
                 'size': size,
                 'lastModified': lastModified,
+                'creationDate': creationDate,
                 'description': description,
                 'tags': tags
             })

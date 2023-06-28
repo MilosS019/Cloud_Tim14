@@ -643,7 +643,6 @@ stepFunctions:
             Type: Task
             Resource:
               Fn::GetAtt: [undoUpload, Arn]
-            ResultPath: "$.undoUploadResult"
             End: true
             
     fileRenameStateMachine:
@@ -689,8 +688,6 @@ stepFunctions:
             Type: Task
             Resource:
               Fn::GetAtt: [undoMoving, Arn]
-            ResultPath: "$.undoUploadResult"
-            OutputPath: "$.Payload"
             End: true
 
     testnaStateMasina:

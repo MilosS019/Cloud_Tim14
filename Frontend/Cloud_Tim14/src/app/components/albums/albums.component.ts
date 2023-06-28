@@ -92,7 +92,7 @@ export class AlbumsComponent implements OnInit {
         let fileInfo: MyFile = {
           name: file[0],
           size: data.Item.size,
-          creationDate: '12.12.2020',
+          creationDate: data.Item.creationDate,
           lastModifiedDate: data.Item.lastModified,
           type: data.Item.type,
           description: data.Item.description,
@@ -125,9 +125,10 @@ export class AlbumsComponent implements OnInit {
       };
       this.albums.push(album);
     }
-    this.fileService.getFiles(this.currentpath).subscribe({
+  this.fileService.getFiles(this.currentpath).subscribe({
       next: (data) => {
         console.log(data)
+        console.log("wtf")
         for (let file of data) {
           let file_path = file.split('/');
           let file_name = file_path[file_path.length - 1];
@@ -144,6 +145,7 @@ export class AlbumsComponent implements OnInit {
   }
 
   changeFolder(albumName: string) {
+    console.log("wtf")
     this.currentpath += albumName + '/';
     this.pathHistory.push(this.currentAlbum);
     this.currentAlbum = albumName;
@@ -251,7 +253,7 @@ export class AlbumsComponent implements OnInit {
   moveFile(values:[string,string]){
     let albumName = values[0]
     let fileName = values[1]
-    let fileParams: { oldPath: string; path: string; type: string; size: number; lastModified: string; description: string; tags: string; };
+    let fileParams: { oldPath: string; creationDate:string; path: string; type: string; size: number; lastModified: string; description: string; tags: string; };
     if(albumName == ".."){
       let prevPath = this.pathHistory[this.pathHistory.length - 1]
       if(this.pathHistory[this.pathHistory.length - 1] == this.rootFolder)
@@ -262,6 +264,7 @@ export class AlbumsComponent implements OnInit {
           'path' : prevPath + "/" + fileName,
           'type' : this.selectedFile.type,
           'size' : this.selectedFile.size,
+          'creationDate':this.selectedFile.creationDate,
           'lastModified' : today.toString(),
           'description' : this.selectedFile.description,
           'tags' : this.getTagsAsString(this.selectedFile.tags)
@@ -275,6 +278,7 @@ export class AlbumsComponent implements OnInit {
         'path' : this.currentpath + albumName + "/" + fileName,
         'type' : this.selectedFile.type,
         'size' : this.selectedFile.size,
+        'creationDate': this.selectedFile.creationDate,
         'lastModified' : this.selectedFile.lastModifiedDate,
         'description' : this.selectedFile.description,
         'tags' : this.getTagsAsString(this.selectedFile.tags)
@@ -288,13 +292,14 @@ export class AlbumsComponent implements OnInit {
   }
 
   startMoving(params:any){
+    console.log(params)
     if(params["newPath"] != ""){
       this.fileService.getLogedInEmail().subscribe({
         next: data=> {
           params["email"] = data["email"]
           this.fileService.moveFile(params).subscribe({
             next: data => {
-              this.updateVisual(this.currentAlbum)
+              setTimeout(() => this.updateVisual(this.currentAlbum), 300)
             },
             error: data => {
               console.log(data)
