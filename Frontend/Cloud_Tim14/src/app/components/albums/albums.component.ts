@@ -114,6 +114,10 @@ export class AlbumsComponent implements OnInit {
     this.showUploadFileDialog = false;
   }
 
+  updateVisualWithDelay(albumName: string){
+    setTimeout(()=> this.updateVisual(albumName), 400)
+  }
+
   updateVisual(albumName: string) {
     this.albums = [];
     this.files = [];
