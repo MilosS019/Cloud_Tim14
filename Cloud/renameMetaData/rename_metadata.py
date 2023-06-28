@@ -20,6 +20,7 @@ def rename_metadata(event, contenxt):
         fileParams = body['fileParams']
         type = fileParams['type']
         size = fileParams['size']
+        creationDate = fileParams['creationDate']
         lastModified = fileParams['lastModified']
         description = fileParams['description']
         tags = fileParams['tags']
@@ -30,6 +31,7 @@ def rename_metadata(event, contenxt):
                 'type': type,
                 'size': size,
                 'lastModified': lastModified,
+                'creationDate': creationDate, 
                 'description': description,
                 'tags': tags
             })

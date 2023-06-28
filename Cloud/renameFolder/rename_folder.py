@@ -1,6 +1,8 @@
 import json
 import boto3
 from utility.utils import create_response
+from utility.utils import sendToSqs
+
 
 def rename_folder(event, context):
     s3 = boto3.client('s3')
@@ -35,6 +37,7 @@ def rename_folder(event, context):
                     'emailAndName': new_key,
                     'type': response["Item"]["type"],
                     'size': response['Item']["size"],
+                    'creationDate':response['Item']['creationDate'],
                     'lastModified': response['Item']['lastModified'],
                     'description': response['Item']['description'],
                 })
@@ -44,5 +47,5 @@ def rename_folder(event, context):
                     'emailAndName' : key
                 }
             )
-    
+
     return create_response(200, "Renamed succsefully")

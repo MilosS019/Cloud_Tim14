@@ -1,7 +1,7 @@
 <div>
   <div class="album-card">
     
-    <div class="album-count" (click)="openAlbum()">Number of files: {{ album.numberOfFiles }}</div>
+    <div class="album-count" (click)="openAlbum()"></div>
     <div class="album-details">
       <input (keyup.enter)="startSaving()" name = "name" id = "name" #name class="album-title" value="{{ album.name }}" disabled>
     </div>

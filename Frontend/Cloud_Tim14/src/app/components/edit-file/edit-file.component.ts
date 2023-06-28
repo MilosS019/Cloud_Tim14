@@ -83,6 +83,7 @@ export class EditFileComponent implements OnInit {
         path: this.path + this.formGroup.value.fileName,
         type: this.file.type,
         size: this.file.size,
+        creationDate: this.file.creationDate,
         lastModified: today.toString(),
         description: this.formGroup.value.description,
         tags: this.getTagsAsString(this.tags)
